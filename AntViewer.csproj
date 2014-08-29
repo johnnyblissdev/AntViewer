@@ -113,11 +113,29 @@
     <Compile Include="AntViewer.Designer.cs">
       <DependentUpon>AntViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="API\Antminer.cs" />
-    <Compile Include="API\Antminers.cs" />
-    <Compile Include="API\AntminerStatus.cs" />
+    <Compile Include="API\Alert\AbstractAlert.cs" />
+    <Compile Include="API\Alert\AlertType.cs" />
+    <Compile Include="API\Alert\IAlert.cs" />
+    <Compile Include="API\Alert\MinerDownAlert.cs" />
+    <Compile Include="API\Antminer\Antminer.cs" />
+    <Compile Include="API\Antminer\Antminers.cs" />
+    <Compile Include="API\Antminer\AntminerStatus.cs" />
+    <Compile Include="API\Settings\Settings.cs" />
     <Compile Include="Communication\Antminer\AntminerConnector.cs" />
     <Compile Include="DataService\Antminer\AntminerService.cs" />
+    <Compile Include="DataService\Settings\SettingsService.cs" />
+    <Compile Include="Forms\Alerts\EmailSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Alerts\EmailSettings.Designer.cs">
+      <DependentUpon>EmailSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Alerts\ManageAlerts.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Alerts\ManageAlerts.Designer.cs">
+      <DependentUpon>ManageAlerts.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Antminer\AntminerDetails.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -138,6 +156,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserControls\Alert\MinerDown.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Alert\MinerDown.Designer.cs">
+      <DependentUpon>MinerDown.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\Antminer\AntminerDetails.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -146,6 +170,12 @@
     </Compile>
     <EmbeddedResource Include="AntViewer.resx">
       <DependentUpon>AntViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Alerts\EmailSettings.resx">
+      <DependentUpon>EmailSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Alerts\ManageAlerts.resx">
+      <DependentUpon>ManageAlerts.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Antminer\AntminerDetails.resx">
       <DependentUpon>AntminerDetails.cs</DependentUpon>
@@ -165,6 +195,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="UserControls\Alert\MinerDown.resx">
+      <DependentUpon>MinerDown.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UserControls\Antminer\AntminerDetails.resx">
       <DependentUpon>AntminerDetails.cs</DependentUpon>
     </EmbeddedResource>

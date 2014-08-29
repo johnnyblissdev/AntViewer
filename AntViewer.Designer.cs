@@ -36,10 +36,15 @@
             this.lblHighestTemp = new Telerik.WinControls.UI.RadLabel();
             this.lblHashRate = new Telerik.WinControls.UI.RadLabel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.lblDonate = new Telerik.WinControls.UI.RadLabel();
+            this.txtDonate = new Telerik.WinControls.UI.RadTextBox();
             this.btnRefresh = new Telerik.WinControls.UI.RadButton();
             this.btnManageAntminers = new Telerik.WinControls.UI.RadButton();
-            this.txtDonate = new Telerik.WinControls.UI.RadTextBox();
-            this.lblDonate = new Telerik.WinControls.UI.RadLabel();
+            this.mnuMain = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.alertsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.emailSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grdAntminers)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.grdAntminers.MasterTemplate)).BeginInit();
@@ -48,28 +53,29 @@
             ((System.ComponentModel.ISupportInitialize)(this.lblHighestTemp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.lblHashRate)).BeginInit();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.lblDonate)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtDonate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnRefresh)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnManageAntminers)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.txtDonate)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lblDonate)).BeginInit();
+            this.mnuMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 637F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 418F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 615F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 687F));
             this.tableLayoutPanel1.Controls.Add(this.grdAntminers, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.panel1, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.panel2, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 24);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 626F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1122, 664);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1302, 715);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // grdAntminers
@@ -80,25 +86,25 @@
             this.tableLayoutPanel1.SetColumnSpan(this.grdAntminers, 2);
             this.grdAntminers.Location = new System.Drawing.Point(3, 41);
             this.grdAntminers.Name = "grdAntminers";
-            this.grdAntminers.Size = new System.Drawing.Size(1116, 620);
+            this.grdAntminers.Size = new System.Drawing.Size(1296, 671);
             this.grdAntminers.TabIndex = 0;
             this.grdAntminers.Text = "radGridView1";
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.panel1.Controls.Add(this.lblHighestHwe);
             this.panel1.Controls.Add(this.lblHighestTemp);
             this.panel1.Controls.Add(this.lblHashRate);
-            this.panel1.Location = new System.Drawing.Point(640, 3);
+            this.panel1.Location = new System.Drawing.Point(618, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(479, 32);
+            this.panel1.Size = new System.Drawing.Size(681, 32);
             this.panel1.TabIndex = 2;
             // 
             // lblHighestHwe
             // 
             this.lblHighestHwe.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblHighestHwe.Location = new System.Drawing.Point(331, 3);
+            this.lblHighestHwe.Location = new System.Drawing.Point(505, 4);
             this.lblHighestHwe.Name = "lblHighestHwe";
             this.lblHighestHwe.Size = new System.Drawing.Size(112, 25);
             this.lblHighestHwe.TabIndex = 2;
@@ -108,7 +114,7 @@
             // lblHighestTemp
             // 
             this.lblHighestTemp.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblHighestTemp.Location = new System.Drawing.Point(170, 4);
+            this.lblHighestTemp.Location = new System.Drawing.Point(298, 4);
             this.lblHighestTemp.Name = "lblHighestTemp";
             this.lblHighestTemp.Size = new System.Drawing.Size(113, 25);
             this.lblHighestTemp.TabIndex = 1;
@@ -117,7 +123,7 @@
             // lblHashRate
             // 
             this.lblHashRate.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblHashRate.Location = new System.Drawing.Point(4, 4);
+            this.lblHashRate.Location = new System.Drawing.Point(3, 4);
             this.lblHashRate.Name = "lblHashRate";
             this.lblHashRate.Size = new System.Drawing.Size(76, 25);
             this.lblHashRate.TabIndex = 0;
@@ -132,8 +138,27 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(3, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(631, 32);
+            this.panel2.Size = new System.Drawing.Size(609, 32);
             this.panel2.TabIndex = 3;
+            // 
+            // lblDonate
+            // 
+            this.lblDonate.Location = new System.Drawing.Point(322, 7);
+            this.lblDonate.Name = "lblDonate";
+            this.lblDonate.Size = new System.Drawing.Size(45, 18);
+            this.lblDonate.TabIndex = 5;
+            this.lblDonate.Text = "Donate:";
+            // 
+            // txtDonate
+            // 
+            this.txtDonate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtDonate.Location = new System.Drawing.Point(373, 7);
+            this.txtDonate.Name = "txtDonate";
+            this.txtDonate.ReadOnly = true;
+            this.txtDonate.Size = new System.Drawing.Size(230, 20);
+            this.txtDonate.TabIndex = 4;
+            this.txtDonate.Text = "1635WqpWgwwJhS9txZB8Kg87Yt4RGtgaCC";
+            this.txtDonate.ThemeName = "Windows8";
             // 
             // btnRefresh
             // 
@@ -157,31 +182,55 @@
             this.btnManageAntminers.ThemeName = "Windows8";
             this.btnManageAntminers.Click += new System.EventHandler(this.btnManageAntminers_Click);
             // 
-            // txtDonate
+            // mnuMain
             // 
-            this.txtDonate.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtDonate.Location = new System.Drawing.Point(373, 7);
-            this.txtDonate.Name = "txtDonate";
-            this.txtDonate.ReadOnly = true;
-            this.txtDonate.Size = new System.Drawing.Size(230, 20);
-            this.txtDonate.TabIndex = 4;
-            this.txtDonate.Text = "1635WqpWgwwJhS9txZB8Kg87Yt4RGtgaCC";
-            this.txtDonate.ThemeName = "Windows8";
+            this.mnuMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
+            this.alertsToolStripMenuItem});
+            this.mnuMain.Location = new System.Drawing.Point(0, 0);
+            this.mnuMain.Name = "mnuMain";
+            this.mnuMain.Size = new System.Drawing.Size(1302, 24);
+            this.mnuMain.TabIndex = 1;
+            this.mnuMain.Text = "menuStrip1";
             // 
-            // lblDonate
+            // fileToolStripMenuItem
             // 
-            this.lblDonate.Location = new System.Drawing.Point(322, 7);
-            this.lblDonate.Name = "lblDonate";
-            this.lblDonate.Size = new System.Drawing.Size(45, 18);
-            this.lblDonate.TabIndex = 5;
-            this.lblDonate.Text = "Donate:";
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exitToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // alertsToolStripMenuItem
+            // 
+            this.alertsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.emailSettingsToolStripMenuItem});
+            this.alertsToolStripMenuItem.Name = "alertsToolStripMenuItem";
+            this.alertsToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
+            this.alertsToolStripMenuItem.Text = "Alerts";
+            this.alertsToolStripMenuItem.Visible = false;
+            // 
+            // emailSettingsToolStripMenuItem
+            // 
+            this.emailSettingsToolStripMenuItem.Name = "emailSettingsToolStripMenuItem";
+            this.emailSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.emailSettingsToolStripMenuItem.Text = "Settings";
+            this.emailSettingsToolStripMenuItem.Click += new System.EventHandler(this.emailSettingsToolStripMenuItem_Click);
             // 
             // AntViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1122, 664);
+            this.ClientSize = new System.Drawing.Size(1302, 739);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.mnuMain);
             this.Name = "AntViewer";
             // 
             // 
@@ -200,12 +249,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.lblHashRate)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.lblDonate)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtDonate)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnRefresh)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnManageAntminers)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.txtDonate)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lblDonate)).EndInit();
+            this.mnuMain.ResumeLayout(false);
+            this.mnuMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -223,6 +275,11 @@
         private Telerik.WinControls.UI.RadButton btnManageAntminers;
         private Telerik.WinControls.UI.RadTextBox txtDonate;
         private Telerik.WinControls.UI.RadLabel lblDonate;
+        private System.Windows.Forms.MenuStrip mnuMain;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem alertsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem emailSettingsToolStripMenuItem;
 
 
     }

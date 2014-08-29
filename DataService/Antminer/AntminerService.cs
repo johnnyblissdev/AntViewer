@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using AntViewer.API;
+using AntViewer.API.Antminer;
 using D.Common;
 
 namespace AntViewer.DataService.Antminer
@@ -24,7 +24,7 @@ namespace AntViewer.DataService.Antminer
             return antminers;
         }
 
-        public static API.Antminer GetAntminerById(Guid id)
+        public static API.Antminer.Antminer GetAntminerById(Guid id)
         {
             var antminers = GetAntminers();
             return antminers.Antminer.SingleOrDefault(x => x.Id.Equals(id));

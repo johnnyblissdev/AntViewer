@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AntViewer.API
+namespace AntViewer.API.Antminer
 {
     public class Antminer
     {

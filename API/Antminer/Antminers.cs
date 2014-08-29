@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AntViewer.API
+namespace AntViewer.API.Antminer
 {
     public class Antminers
     {

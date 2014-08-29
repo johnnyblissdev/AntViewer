@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AntViewer.API
+namespace AntViewer.API.Antminer
 {
     public class AntminerStatus
     {
@@ -14,6 +14,7 @@ namespace AntViewer.API
         public double HardwareErrorPercentage { get; set; }
         public double RejectPercentage { get; set; }
         public double StalePercentage { get; set; }
+        public double BestShare { get; set; }
         public string Fans { get; set; }
         public string Temps { get; set; }
 

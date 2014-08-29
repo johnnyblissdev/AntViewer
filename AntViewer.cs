@@ -5,9 +5,10 @@ using System.Linq;
 using System.Net;
 using System.Timers;
 using System.Windows.Forms;
-using AntViewer.API;
+using AntViewer.API.Antminer;
 using AntViewer.Communication.Antminer;
 using AntViewer.DataService.Antminer;
+using AntViewer.Forms.Alerts;
 using AntViewer.Forms.Antminer;
 using AntViewer.Forms.Common;
 using Telerik.WinControls;
@@ -70,6 +71,7 @@ namespace AntViewer
             grdAntminers.Columns.Add("HardwareErrorPercentage", "Hardware Error %", "HardwareErrorPercentage");
             grdAntminers.Columns.Add("RejectPercentage", "Reject %", "RejectPercentage");
             grdAntminers.Columns.Add("StalePercentage", "Stale %", "StalePercentage");
+            grdAntminers.Columns.Add("BestShare", "Best Share", "BestShare");
             grdAntminers.Columns.Add("Fans", "Fans", "Fans");
             grdAntminers.Columns.Add("Temps", "Temps", "Temps");
             grdAntminers.Columns.Add("Freq", "Freq", "Freq");
@@ -87,10 +89,11 @@ namespace AntViewer
             grdAntminers.Columns[9].Width = 100;
             grdAntminers.Columns[10].Width = 100;
             grdAntminers.Columns[11].Width = 100;
-            grdAntminers.Columns[12].Width = 60;
+            grdAntminers.Columns[12].Width = 75;
             grdAntminers.Columns[13].Width = 60;
             grdAntminers.Columns[14].Width = 60;
-            grdAntminers.Columns[15].Width = 350;
+            grdAntminers.Columns[15].Width = 60;
+            grdAntminers.Columns[16].Width = 350;
 
             #endregion
 
@@ -224,6 +227,7 @@ namespace AntViewer
                     status.HardwareErrorPercentage = Math.Round(hwError / (diffA + diffR) * 100, 2);
                     status.RejectPercentage = (Math.Round(rejects / accepted) * 100);
                     status.StalePercentage = (Math.Round(stale / accepted) * 100);
+                    status.BestShare = Convert.ToDouble(summary["Best Share"].ToString());
                     status.Fans = string.Format("{0}, {1}", stats["fan1"], stats["fan2"]);
                     status.Temps = string.Format("{0}, {1}", stats["temp1"], stats["temp2"]);
                     status.Freq = stats["frequency"].ToString();
@@ -261,10 +265,11 @@ namespace AntViewer
                     rowInfo.Cells[9].Value = status.HardwareErrorPercentage;
                     rowInfo.Cells[10].Value = status.RejectPercentage;
                     rowInfo.Cells[11].Value = status.StalePercentage;
-                    rowInfo.Cells[12].Value = status.Fans;
-                    rowInfo.Cells[13].Value = status.Temps;
-                    rowInfo.Cells[14].Value = status.Freq;
-                    rowInfo.Cells[15].Value = status.AsicStatus;
+                    rowInfo.Cells[12].Value = status.BestShare;
+                    rowInfo.Cells[13].Value = status.Fans;
+                    rowInfo.Cells[14].Value = status.Temps;
+                    rowInfo.Cells[15].Value = status.Freq;
+                    rowInfo.Cells[16].Value = status.AsicStatus;
 
                     if (grdAntminers.InvokeRequired)
                         grdAntminers.Invoke(new MethodInvoker(() => grdAntminers.Rows.Add(rowInfo)));
@@ -284,10 +289,11 @@ namespace AntViewer
                     row.Cells[9].Value = status.HardwareErrorPercentage;
                     row.Cells[10].Value = status.RejectPercentage;
                     row.Cells[11].Value = status.StalePercentage;
-                    row.Cells[12].Value = status.Fans;
-                    row.Cells[13].Value = status.Temps;
-                    row.Cells[14].Value = status.Freq;
-                    row.Cells[15].Value = status.AsicStatus;
+                    row.Cells[12].Value = status.BestShare;
+                    row.Cells[13].Value = status.Fans;
+                    row.Cells[14].Value = status.Temps;
+                    row.Cells[15].Value = status.Freq;
+                    row.Cells[16].Value = status.AsicStatus;
                 }
             }
 
@@ -321,10 +327,26 @@ namespace AntViewer
 
         #region Helpers
 
+        public string GetFormattedHashRateAverage()
+        {
+            var hashRate = grdAntminers.Rows.Average(r => Convert.ToDouble(r.Cells[6].Value));
+            return hashRate > 1000 ? string.Format("{0}TH", Math.Round(hashRate / 1000, 3)) : string.Format("{0}GH", Math.Round(hashRate, 3));
+        }
+
         public string GetFormattedHashRate()
         {
-            var hashRate = grdAntminers.Rows.Sum(r => Convert.ToDouble(r.Cells[6].Value));
-            return hashRate > 1000 ? string.Format("{0}TH", Math.Round(hashRate/1000, 3)) : string.Format("{0}GH", Math.Round(hashRate, 3));
+            try
+            {
+                var hashRate = grdAntminers.Rows.Sum(r => Convert.ToDouble(r.Cells[6].Value));
+                var hashRateAv = grdAntminers.Rows.Average(r => Convert.ToDouble(r.Cells[6].Value));
+                var formattedHashRate = hashRate > 1000 ? string.Format("{0}TH", Math.Round(hashRate / 1000, 3)) : string.Format("{0}GH", Math.Round(hashRate, 3));
+                var formattedHashRateAv = hashRateAv > 1000 ? string.Format("{0}TH", Math.Round(hashRateAv / 1000, 3)) : string.Format("{0}GH", Math.Round(hashRateAv, 3));
+                return string.Format("{0} ({1} Av)", formattedHashRate, formattedHashRateAv);
+            }
+            catch (Exception)
+            {
+                return "0GH (0GH Av)";
+            }
         }
         
         public string GetFormattedHighestTemp()
@@ -334,7 +356,7 @@ namespace AntViewer
             {
                 try
                 {
-                    var temps = r.Cells[13].Value.ToString().Replace(" ", string.Empty).Split(new[] {','});
+                    var temps = r.Cells[14].Value.ToString().Replace(" ", string.Empty).Split(new[] {','});
                     var temp1 = Convert.ToInt32(temps[0]);
                     var temp2 = Convert.ToInt32(temps[1]);
 
@@ -356,6 +378,20 @@ namespace AntViewer
             return string.Format("{0}%", grdAntminers.Rows.Max(r => Convert.ToDouble(r.Cells[9].Value)));
         }
         
+        #endregion
+
+        #region Menu Events
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+        
+        private void emailSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new ManageAlerts().ShowDialog();
+        }
+
         #endregion
     }
 }

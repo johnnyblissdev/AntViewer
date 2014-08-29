@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Windows.Forms;
-using AntViewer.API;
+using AntViewer.API.Antminer;
 using AntViewer.Communication.Antminer;
 using AntViewer.DataService.Antminer;
 using AntViewer.Forms.Common;
@@ -89,7 +89,7 @@ namespace AntViewer.Forms.Antminer
                 {
                     if (AntminerConnector.Exists(ipAddress))
                     {
-                        var antminer = new API.Antminer
+                        var antminer = new API.Antminer.Antminer
                         {
                             Id = Guid.NewGuid(),
                             Name = ipAddress.ToString(),
@@ -128,7 +128,7 @@ namespace AntViewer.Forms.Antminer
         
         private void btnAdd_Click(object sender, System.EventArgs e)
         {
-            var antminer = new API.Antminer
+            var antminer = new API.Antminer.Antminer
             {
                 Id = Guid.NewGuid(),
                 Name = txtName.Text,
@@ -200,7 +200,7 @@ namespace AntViewer.Forms.Antminer
 
         private void btnDeleteAll_Click(object sender, EventArgs e)
         {
-            Antminers.Antminer = new List<API.Antminer>();
+            Antminers.Antminer = new List<API.Antminer.Antminer>();
             PopulateAntminers();
             SaveAntminers();
         }
