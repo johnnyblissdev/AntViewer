@@ -79,7 +79,7 @@ namespace AntViewer.Forms.Antminer
         {
             var sn = ddlScanIpRange.SelectedItem.Value;
 
-            for (var i = 1; i <= 255; i++)
+            for (var i = 1; i < 255; i++)
             {
                 var ipAddress = IPAddress.Parse(string.Format("192.168.{0}.{1}", sn, i));
 
