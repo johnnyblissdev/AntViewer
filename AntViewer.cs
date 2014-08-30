@@ -121,6 +121,7 @@ namespace AntViewer
             try
             {
                 AntminerConnector.Restart(IPAddress.Parse(antminer.IpAddress));
+                new InfoDialog {InfoMessage = "Restarting...", InfoSubject = "Restart Successful"}.ShowDialog();
             }
             catch (Exception ex)
             {

@@ -170,10 +170,17 @@ namespace AntViewer.Communication.Antminer
                     if(string.IsNullOrEmpty(msg))
                         throw new Exception("Unable to restart miner. No response.");
 
-                    var ana = new {STATUS = new List<IDictionary<string, object>>()};
-                    var response = JsonConvert.DeserializeAnonymousType(msg.Substring(0, msg.Length - 2), ana);
-                    if(response.STATUS[0]["STATUS"].Equals("E"))
-                        throw new Exception("Unable to restart miner, privledged access denied.");
+                    try
+                    {
+                        var ana = new {STATUS = new List<IDictionary<string, object>>()};
+                        var response = JsonConvert.DeserializeAnonymousType(msg.Substring(0, msg.Length - 2), ana);
+                        if (response.STATUS[0]["STATUS"].Equals("E"))
+                            throw new Exception("Unable to restart miner, privledged access denied.");
+                    }
+                    catch (Exception)
+                    {
+                        
+                    }
                 }
             }
         }
