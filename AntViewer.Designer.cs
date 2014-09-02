@@ -45,6 +45,7 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.alertsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.emailSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.massRebootToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grdAntminers)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.grdAntminers.MasterTemplate)).BeginInit();
@@ -74,7 +75,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 626F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 654F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(1302, 715);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
@@ -186,7 +187,8 @@
             // 
             this.mnuMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.alertsToolStripMenuItem});
+            this.alertsToolStripMenuItem,
+            this.massRebootToolStripMenuItem});
             this.mnuMain.Location = new System.Drawing.Point(0, 0);
             this.mnuMain.Name = "mnuMain";
             this.mnuMain.Size = new System.Drawing.Size(1302, 24);
@@ -220,9 +222,16 @@
             // emailSettingsToolStripMenuItem
             // 
             this.emailSettingsToolStripMenuItem.Name = "emailSettingsToolStripMenuItem";
-            this.emailSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.emailSettingsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.emailSettingsToolStripMenuItem.Text = "Settings";
             this.emailSettingsToolStripMenuItem.Click += new System.EventHandler(this.emailSettingsToolStripMenuItem_Click);
+            // 
+            // massRebootToolStripMenuItem
+            // 
+            this.massRebootToolStripMenuItem.Name = "massRebootToolStripMenuItem";
+            this.massRebootToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
+            this.massRebootToolStripMenuItem.Text = "Mass Reboot";
+            this.massRebootToolStripMenuItem.Click += new System.EventHandler(this.massRebootToolStripMenuItem_Click);
             // 
             // AntViewer
             // 
@@ -280,6 +289,7 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem alertsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem emailSettingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem massRebootToolStripMenuItem;
 
 
     }

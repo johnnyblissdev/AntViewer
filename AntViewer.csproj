@@ -148,6 +148,12 @@
     <Compile Include="Forms\Antminer\ManageAntminers.Designer.cs">
       <DependentUpon>ManageAntminers.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Common\ConfirmDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Common\ConfirmDialog.Designer.cs">
+      <DependentUpon>ConfirmDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Common\ErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -188,6 +194,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Antminer\ManageAntminers.resx">
       <DependentUpon>ManageAntminers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Common\ConfirmDialog.resx">
+      <DependentUpon>ConfirmDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Common\ErrorDialog.resx">
       <DependentUpon>ErrorDialog.cs</DependentUpon>

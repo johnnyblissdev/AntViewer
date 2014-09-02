@@ -7,6 +7,7 @@ namespace AntViewer.Forms.Common
     {
         public string InfoSubject { get; set; }
         public string InfoMessage { get; set; }
+
         public InfoDialog()
         {
             InitializeComponent();

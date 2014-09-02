@@ -21,6 +21,8 @@ namespace AntViewer.DataService.Antminer
                     a.Id = Guid.NewGuid();
             }
 
+            antminers.Antminer = antminers.Antminer.OrderBy(x => Version.Parse(x.IpAddress)).ToList();
+                
             return antminers;
         }
 

@@ -14,7 +14,17 @@ namespace AntViewer.Communication.Antminer
         public static IDictionary<string, object> GetStats(IPAddress ip)
         {
             var client = new TcpClient();
-            client.Connect(ip, 4028);
+            try
+            {
+                var result = client.BeginConnect(ip, 4028, null, null);
+
+                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, 300)))
+                    throw new Exception("Can't connect to miner...");
+            }
+            catch (Exception)
+            {
+                throw new Exception("Can't connect to miner...");
+            }
 
             using (var os = client.GetStream())
             {
@@ -44,7 +54,17 @@ namespace AntViewer.Communication.Antminer
         public static IDictionary<string, object> GetSummary(IPAddress ip)
         {
             var client = new TcpClient();
-            client.Connect(ip, 4028);
+            try
+            {
+                var result = client.BeginConnect(ip, 4028, null, null);
+
+                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, 300)))
+                    throw new Exception("Can't connect to miner...");
+            }
+            catch (Exception)
+            {
+                throw new Exception("Can't connect to miner...");
+            }
 
             using (var os = client.GetStream())
             {
@@ -74,7 +94,17 @@ namespace AntViewer.Communication.Antminer
         public static List<IDictionary<string, object>> GetPools(IPAddress ip)
         {
             var client = new TcpClient();
-            client.Connect(ip, 4028);
+            try
+            {
+                var result = client.BeginConnect(ip, 4028, null, null);
+
+                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, 300)))
+                    throw new Exception("Can't connect to miner...");
+            }
+            catch (Exception)
+            {
+                throw new Exception("Can't connect to miner...");
+            }
 
             using (var os = client.GetStream())
             {
@@ -151,7 +181,17 @@ namespace AntViewer.Communication.Antminer
         public static void Restart(IPAddress ip)
         {
             var client = new TcpClient();
-            client.Connect(ip, 4028);
+            try
+            {
+                var result = client.BeginConnect(ip, 4028, null, null);
+
+                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, 300)))
+                    throw new Exception("Can't connect to miner...");
+            }
+            catch (Exception)
+            {
+                throw new Exception("Can't connect to miner...");
+            }
 
             using (var os = client.GetStream())
             {
@@ -170,17 +210,21 @@ namespace AntViewer.Communication.Antminer
                     if(string.IsNullOrEmpty(msg))
                         throw new Exception("Unable to restart miner. No response.");
 
+                    var failed = false;
                     try
                     {
                         var ana = new {STATUS = new List<IDictionary<string, object>>()};
                         var response = JsonConvert.DeserializeAnonymousType(msg.Substring(0, msg.Length - 2), ana);
                         if (response.STATUS[0]["STATUS"].Equals("E"))
-                            throw new Exception("Unable to restart miner, privledged access denied.");
+                            failed = true;
                     }
                     catch (Exception)
                     {
                         
                     }
+
+                    if(failed)
+                        throw new Exception("Unable to restart miner, privledged access denied.");
                 }
             }
         }

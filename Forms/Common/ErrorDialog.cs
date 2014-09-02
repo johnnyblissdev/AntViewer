@@ -8,6 +8,9 @@ namespace AntViewer.Forms.Common
     {
         public string ErrorSubject { get; set; }
         public string ErrorMessage { get; set; }
+        public string LongErrorMessage { get; set; }
+
+        private RadToolTip _longErrorTooltip { get; set; }
 
         public ErrorDialog()
         {
@@ -25,6 +28,24 @@ namespace AntViewer.Forms.Common
             lblErrorMessage.Text = ErrorMessage;
 
             ThemeResolutionService.ApplicationThemeName = "Windows8";
+
+            if (!string.IsNullOrEmpty(LongErrorMessage))
+            {
+                lblErrorMessage.MouseEnter += lblErrorMessage_MouseEnter;
+                lblErrorMessage.MouseLeave += lblErrorMessage_MouseLeave;
+            }
+        }
+
+        void lblErrorMessage_MouseLeave(object sender, EventArgs e)
+        {
+            if(_longErrorTooltip != null)
+                _longErrorTooltip.Hide();
+        }
+
+        void lblErrorMessage_MouseEnter(object sender, EventArgs e)
+        {
+            _longErrorTooltip = new RadToolTip();
+            _longErrorTooltip.Show(LongErrorMessage);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Timers;
@@ -25,6 +26,9 @@ namespace AntViewer
 
         private DateTime _lastRefreshed;
         private int _rowCount = 1;
+        private int _refreshRowCount = 0;
+
+        private Antminers _antminers = new Antminers();
         
         public AntViewer()
         {
@@ -33,7 +37,11 @@ namespace AntViewer
 
         private void AntViewer_Load(object sender, System.EventArgs e)
         {
+            Text = string.Format("Spiceminer's Ant Viewer - v{0}", FileVersionInfo.GetVersionInfo(typeof(AntViewer).Assembly.Location).FileVersion);
+
             ThemeResolutionService.ApplicationThemeName = "Windows8";
+
+            WindowState = FormWindowState.Maximized;
 
             #region Antminers Grid
 
@@ -97,20 +105,48 @@ namespace AntViewer
 
             #endregion
 
-            RefreshTimer.Elapsed += RefreshTimer_Elapsed;
-            RefreshTimer.AutoReset = true;
-            RefreshTimer.Start();
+            _antminers = AntminerService.GetAntminers();
 
-            StatsTimer.Elapsed += StatsTimer_Elapsed;
-            StatsTimer.AutoReset = true;
-            StatsTimer.Enabled = false;
-
-            CountdownTimer.Elapsed += CountdownTimer_Elapsed;
-            CountdownTimer.AutoReset = true;
-            CountdownTimer.Enabled = false;
+            if (grdAntminers.Rows.Count == 0)
+            {
+                PopulateGrid(_antminers);
+                BeginMonitoring();
+            }
+            else
+                BeginMonitoring();
         }
 
         #region Context Menu Events
+
+        void massRebootToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var result = new ConfirmDialog { ConfirmSubject = "Mass Reboot", ConfirmMessage = "Are you sure you want to reboot all miners?" }.ShowDialog();
+            if (!result.Equals(DialogResult.OK)) return;
+
+            var errors = new List<string>();
+            _antminers = AntminerService.GetAntminers();
+            foreach (var ant in _antminers.Antminer)
+            {
+                try
+                {
+                    AntminerConnector.Restart(IPAddress.Parse(ant.IpAddress));
+                }
+                catch (Exception ex)
+                {
+                    errors.Add(string.Format("{0}: {1}", ant.IpAddress, ex.Message));
+                }
+            }
+
+            if (errors.Count > 0)
+            {
+                new ErrorDialog
+                {
+                    ErrorSubject = "Error rebooting miner(s)",
+                    ErrorMessage = "Some miners error when trying to restart. Hover to see error messages.",
+                    LongErrorMessage = errors.Aggregate((w, j) => string.Format("{0}\r\n{1}", w, j))
+                }.ShowDialog();
+            }
+        }
 
         void restart_Click(object sender, EventArgs e)
         {
@@ -121,7 +157,7 @@ namespace AntViewer
             try
             {
                 AntminerConnector.Restart(IPAddress.Parse(antminer.IpAddress));
-                new InfoDialog {InfoMessage = "Restarting...", InfoSubject = "Restart Successful"}.ShowDialog();
+                new InfoDialog { InfoSubject = "Restarting...", InfoMessage = "Restart Successful" }.ShowDialog();
             }
             catch (Exception ex)
             {
@@ -155,28 +191,26 @@ namespace AntViewer
 
         void RefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            _lastRefreshed = DateTime.Now;
+            _antminers = AntminerService.GetAntminers();
 
-            var antminers = AntminerService.GetAntminers();
+            _refreshRowCount = 0;
 
-            var antminerStatusBackgroundWorker = new BackgroundWorker();
-            antminerStatusBackgroundWorker.DoWork += antminerStatusBackgroundWorker_DoWork;
-            antminerStatusBackgroundWorker.RunWorkerCompleted += antminerStatusBackgroundWorker_RunWorkerCompleted;
-            antminerStatusBackgroundWorker.RunWorkerAsync(antminers);
-            
-            RefreshTimer.Interval = 60000;
+            if (grdAntminers.Rows.Count == 0)
+                PopulateGrid(_antminers);
 
-            if (!StatsTimer.Enabled)
+            StatsTimer.Enabled = true;
+            StatsTimer.Stop();
+
+            CountdownTimer.Enabled = false;
+            CountdownTimer.Stop();
+
+            foreach (var ant in _antminers.Antminer)
             {
-                StatsTimer.Enabled = true;
-                StatsTimer.Start();
-            }
-
-            if (!CountdownTimer.Enabled)
-            {
-                CountdownTimer.Enabled = true;
-                CountdownTimer.Start();
-            }
+                var antminerStatusBackgroundWorker = new BackgroundWorker();
+                antminerStatusBackgroundWorker.DoWork += antminerStatusBackgroundWorker_DoWork;
+                antminerStatusBackgroundWorker.RunWorkerCompleted += antminerStatusBackgroundWorker_RunWorkerCompleted;
+                antminerStatusBackgroundWorker.RunWorkerAsync(ant);
+            }   
         }
 
         #endregion
@@ -185,99 +219,105 @@ namespace AntViewer
 
         void antminerStatusBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            var antminers = e.Argument as Antminers;
-            if (antminers == null || antminers.Antminer.Count == 0) return;
+            var ant = e.Argument as Antminer;
+            if (ant == null) return;
 
-            var statuses = new List<AntminerStatus>();
-            foreach (var ant in antminers.Antminer)
+            var status = new AntminerStatus
             {
-                var status = new AntminerStatus
-                {
-                    Id = ant.Id,
-                    IpAddress = ant.IpAddress,
-                    Name = ant.Name
-                };
+                Id = ant.Id,
+                IpAddress = ant.IpAddress,
+                Name = ant.Name
+            };
 
-                try
+            var updatingRow = grdAntminers.Rows.SingleOrDefault(x => x.Tag.Equals(status.Id));
+            if (updatingRow != null)
+            {
+                grdAntminers.Invoke(new MethodInvoker(() =>
                 {
-                    var updatingRow = grdAntminers.Rows.SingleOrDefault(x => x.Tag.Equals(status.Id));
                     updatingRow.Cells[2].Value = "-------------";
-                }
-                catch (Exception)
-                {
-                    
-                }
+                }));
+            }       
+                
+            try
+            {
+                var summary = AntminerConnector.GetSummary(IPAddress.Parse(ant.IpAddress));
+                var stats = AntminerConnector.GetStats(IPAddress.Parse(ant.IpAddress));
 
-                try
-                {
-                    var summary = AntminerConnector.GetSummary(IPAddress.Parse(ant.IpAddress));
-                    var stats = AntminerConnector.GetStats(IPAddress.Parse(ant.IpAddress));
+                var hwError = Convert.ToInt32(summary["Hardware Errors"].ToString());
+                var diffA = Convert.ToDouble(summary["Difficulty Accepted"].ToString());
+                var diffR = Convert.ToDouble(summary["Difficulty Rejected"].ToString());
 
-                    var hwError = Convert.ToInt32(summary["Hardware Errors"].ToString());
-                    var diffA = Convert.ToDouble(summary["Difficulty Accepted"].ToString());
-                    var diffR = Convert.ToDouble(summary["Difficulty Rejected"].ToString());
+                var rejects = Convert.ToDouble(summary["Rejected"].ToString());
+                var accepted = Convert.ToDouble(summary["Accepted"].ToString());
+                var stale = Convert.ToDouble(summary["Stale"].ToString());
 
-                    var rejects = Convert.ToDouble(summary["Rejected"].ToString());
-                    var accepted = Convert.ToDouble(summary["Accepted"].ToString());
-                    var stale = Convert.ToDouble(summary["Stale"].ToString());
+                status.Status = "Alive";
+                status.Ghs5S = Convert.ToDouble(summary["GHS 5s"].ToString());
+                status.GhsAv = Convert.ToDouble(summary["GHS av"].ToString());
+                status.Blocks = summary["Found Blocks"].ToString();
+                status.HardwareErrorPercentage = Math.Round(hwError / (diffA + diffR) * 100, 2);
+                status.RejectPercentage = (Math.Round(rejects / accepted) * 100);
+                status.StalePercentage = (Math.Round(stale / accepted) * 100);
+                status.BestShare = Convert.ToDouble(summary["Best Share"].ToString());
+                status.Fans = string.Format("{0}, {1}", stats["fan1"], stats["fan2"]);
+                status.Temps = string.Format("{0}, {1}", stats["temp1"], stats["temp2"]);
+                status.Freq = stats["frequency"].ToString();
+                status.AsicStatus = string.Format("{0} - {1}", stats["chain_acs1"], stats["chain_acs2"]);
+            }
+            catch (Exception ex)
+            {
+                status.Status = "Dead";
+                status.Ghs5S = 0;
+                status.GhsAv = 0;
+                status.Blocks = "-";
+                status.HardwareErrorPercentage = 0;
+                status.RejectPercentage = 0;
+                status.StalePercentage = 0;
+                status.Fans = "-";
+                status.Temps = "-";
+                status.Freq = "-";
+                status.AsicStatus = "-";
+            }
 
-                    status.Status = "Alive";
-                    status.Ghs5S = Convert.ToDouble(summary["GHS 5s"].ToString());
-                    status.GhsAv = Convert.ToDouble(summary["GHS av"].ToString());
-                    status.Blocks = summary["Found Blocks"].ToString();
-                    status.HardwareErrorPercentage = Math.Round(hwError / (diffA + diffR) * 100, 2);
-                    status.RejectPercentage = (Math.Round(rejects / accepted) * 100);
-                    status.StalePercentage = (Math.Round(stale / accepted) * 100);
-                    status.BestShare = Convert.ToDouble(summary["Best Share"].ToString());
-                    status.Fans = string.Format("{0}, {1}", stats["fan1"], stats["fan2"]);
-                    status.Temps = string.Format("{0}, {1}", stats["temp1"], stats["temp2"]);
-                    status.Freq = stats["frequency"].ToString();
-                    status.AsicStatus = string.Format("{0} - {1}", stats["chain_acs1"], stats["chain_acs2"]);
-                }
-                catch (Exception ex)
-                {
-                    status.Status = "Dead";
-                    status.Ghs5S = 0;
-                    status.GhsAv = 0;
-                    status.Blocks = "-";
-                    status.HardwareErrorPercentage = 0;
-                    status.RejectPercentage = 0;
-                    status.StalePercentage = 0;
-                    status.Fans = "-";
-                    status.Temps = "-";
-                    status.Freq = "-";
-                    status.AsicStatus = "-";
-                }
+            e.Result = status;
+        }
 
-                var row = grdAntminers.Rows.SingleOrDefault(x => x.Tag.Equals(status.Id));
-                if (row == null)
-                {
-                    var rowInfo = new GridViewDataRowInfo(grdAntminers.MasterView) { Tag = status.Id };
+        void antminerStatusBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            var status = e.Result as AntminerStatus;
+            if (status == null) return;
 
-                    rowInfo.Cells[0].Value = status.Id;
-                    rowInfo.Cells[1].Value = _rowCount++;
-                    rowInfo.Cells[2].Value = DateTime.Now.ToString("h:mm:ss tt");
-                    rowInfo.Cells[3].Value = status.IpAddress;
-                    rowInfo.Cells[4].Value = status.Name;
-                    rowInfo.Cells[5].Value = status.Status;
-                    rowInfo.Cells[6].Value = status.Ghs5S;
-                    rowInfo.Cells[7].Value = status.GhsAv;
-                    rowInfo.Cells[8].Value = status.Blocks;
-                    rowInfo.Cells[9].Value = status.HardwareErrorPercentage;
-                    rowInfo.Cells[10].Value = status.RejectPercentage;
-                    rowInfo.Cells[11].Value = status.StalePercentage;
-                    rowInfo.Cells[12].Value = status.BestShare;
-                    rowInfo.Cells[13].Value = status.Fans;
-                    rowInfo.Cells[14].Value = status.Temps;
-                    rowInfo.Cells[15].Value = status.Freq;
-                    rowInfo.Cells[16].Value = status.AsicStatus;
+            var row = grdAntminers.Rows.SingleOrDefault(x => x.Tag.Equals(status.Id));
+            if (row == null)
+            {
+                var rowInfo = new GridViewDataRowInfo(grdAntminers.MasterView) { Tag = status.Id };
 
-                    if (grdAntminers.InvokeRequired)
-                        grdAntminers.Invoke(new MethodInvoker(() => grdAntminers.Rows.Add(rowInfo)));
-                    else
-                        grdAntminers.Rows.Add(rowInfo);
-                }
+                rowInfo.Cells[0].Value = status.Id;
+                rowInfo.Cells[1].Value = _rowCount++;
+                rowInfo.Cells[2].Value = DateTime.Now.ToString("h:mm:ss tt");
+                rowInfo.Cells[3].Value = status.IpAddress;
+                rowInfo.Cells[4].Value = status.Name;
+                rowInfo.Cells[5].Value = status.Status;
+                rowInfo.Cells[6].Value = status.Ghs5S;
+                rowInfo.Cells[7].Value = status.GhsAv;
+                rowInfo.Cells[8].Value = status.Blocks;
+                rowInfo.Cells[9].Value = status.HardwareErrorPercentage;
+                rowInfo.Cells[10].Value = status.RejectPercentage;
+                rowInfo.Cells[11].Value = status.StalePercentage;
+                rowInfo.Cells[12].Value = status.BestShare;
+                rowInfo.Cells[13].Value = status.Fans;
+                rowInfo.Cells[14].Value = status.Temps;
+                rowInfo.Cells[15].Value = status.Freq;
+                rowInfo.Cells[16].Value = status.AsicStatus;
+
+                if (grdAntminers.InvokeRequired)
+                    grdAntminers.Invoke(new MethodInvoker(() => grdAntminers.Rows.Add(rowInfo)));
                 else
+                    grdAntminers.Rows.Add(rowInfo);
+            }
+            else
+            {
+                grdAntminers.Invoke(new MethodInvoker(() =>
                 {
                     row.Cells[0].Value = status.Id;
                     row.Cells[2].Value = DateTime.Now.ToString("h:mm:ss tt");
@@ -295,15 +335,23 @@ namespace AntViewer
                     row.Cells[14].Value = status.Temps;
                     row.Cells[15].Value = status.Freq;
                     row.Cells[16].Value = status.AsicStatus;
-                }
+                }));
             }
 
-            e.Result = statuses;
-        }
+            _refreshRowCount++;
+            if (_refreshRowCount == _antminers.Antminer.Count)
+            {
+                RefreshTimer.Interval = 60000;
+                RefreshTimer.Start();
 
-        void antminerStatusBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
+                StatsTimer.Enabled = true;
+                StatsTimer.Start();
 
+                _lastRefreshed = DateTime.Now;
+
+                CountdownTimer.Enabled = true;
+                CountdownTimer.Start();
+            }
         }
 
         #endregion
@@ -327,6 +375,55 @@ namespace AntViewer
         #endregion
 
         #region Helpers
+
+        public void BeginMonitoring()
+        {
+            RefreshTimer.Elapsed += RefreshTimer_Elapsed;
+            RefreshTimer.AutoReset = false;
+            RefreshTimer.Start();
+
+            StatsTimer.Elapsed += StatsTimer_Elapsed;
+            StatsTimer.AutoReset = true;
+            StatsTimer.Enabled = false;
+
+            CountdownTimer.Elapsed += CountdownTimer_Elapsed;
+            CountdownTimer.AutoReset = true;
+            CountdownTimer.Enabled = false;
+        }
+
+        public void PopulateGrid(Antminers ants)
+        {
+            var rows = new List<GridViewRowInfo>();
+            foreach (var ant in ants.Antminer)
+            {
+                var rowInfo = new GridViewRowInfo(grdAntminers.MasterView) { Tag = ant.Id };
+
+                rowInfo.Cells[0].Value = ant.Id;
+                rowInfo.Cells[1].Value = _rowCount++;
+                rowInfo.Cells[2].Value = DateTime.Now.ToString("h:mm:ss tt");
+                rowInfo.Cells[3].Value = ant.IpAddress;
+                rowInfo.Cells[4].Value = ant.Name;
+                rowInfo.Cells[5].Value = "-------------";
+                rowInfo.Cells[6].Value = 0;
+                rowInfo.Cells[7].Value = 0;
+                rowInfo.Cells[8].Value = 0;
+                rowInfo.Cells[9].Value = "-";
+                rowInfo.Cells[10].Value = 0;
+                rowInfo.Cells[11].Value = 0;
+                rowInfo.Cells[12].Value = 0;
+                rowInfo.Cells[13].Value = "-";
+                rowInfo.Cells[14].Value = "-";
+                rowInfo.Cells[15].Value = "-";
+                rowInfo.Cells[16].Value = "-";
+                
+                rows.Add(rowInfo);
+            }
+
+            if (grdAntminers.InvokeRequired)
+                grdAntminers.Invoke(new MethodInvoker(() => grdAntminers.Rows.AddRange(rows.ToArray())));
+            else
+                grdAntminers.Rows.AddRange(rows.ToArray());
+        }
 
         public string GetFormattedHashRateAverage()
         {
