@@ -8,7 +8,6 @@ using System.Net;
 using System.Timers;
 using System.Windows.Forms;
 using AntViewer.API.Antminer;
-using AntViewer.API.Settings;
 using AntViewer.Communication.Antminer;
 using AntViewer.DataService.Antminer;
 using AntViewer.DataService.Settings;
@@ -38,7 +37,7 @@ namespace AntViewer
         private List<MiningStatistics> _antMiningStatisticses = new List<MiningStatistics>();
 
         private readonly string _mobileMinerUrl = ConfigurationManager.AppSettings["MobileMiner.Url"] ?? "https://api.mobileminerapp.com";
-        private const string MobileMinerApiKey = "*************";
+        private const string MobileMinerApiKey = "";
 
         public AntViewer()
         {
@@ -408,11 +407,18 @@ namespace AntViewer
                         _antMiningStatisticses[i].DeviceID = i;
                     }
 
-                    ApiContext.SubmitMiningStatistics(_mobileMinerUrl,
-                        MobileMinerApiKey,
-                        settings.MobileMiner.EmailAddress,
-                        settings.MobileMiner.ApplicationKey,
-                        _antMiningStatisticses);
+                    try
+                    {
+                        ApiContext.SubmitMiningStatistics(_mobileMinerUrl,
+                            MobileMinerApiKey,
+                            settings.MobileMiner.EmailAddress,
+                            settings.MobileMiner.ApplicationKey,
+                            _antMiningStatisticses);
+                    }
+                    catch (Exception)
+                    {
+                        
+                    }
                 }
             }
         }
