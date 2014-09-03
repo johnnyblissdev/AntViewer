@@ -39,6 +39,8 @@ namespace AntViewer
         private readonly string _mobileMinerUrl = ConfigurationManager.AppSettings["MobileMiner.Url"] ?? "https://api.mobileminerapp.com";
         private const string MobileMinerApiKey = "";
 
+        private readonly NotifyIcon _notifyIcon = new NotifyIcon();
+
         public AntViewer()
         {
             InitializeComponent();
@@ -51,6 +53,16 @@ namespace AntViewer
             ThemeResolutionService.ApplicationThemeName = "Windows8";
 
             WindowState = FormWindowState.Maximized;
+
+            #region Notify Icon
+
+            _notifyIcon.Icon = Icon;
+            _notifyIcon.BalloonTipTitle = "SAntViewer Minimized to tray";
+            _notifyIcon.BalloonTipText = "SAntViewer has been minimized to tray, click to open.";
+            _notifyIcon.DoubleClick += _notifyIcon_DoubleClick;
+            _notifyIcon.Click += _notifyIcon_DoubleClick;
+
+            #endregion
 
             #region Antminers Grid
 
@@ -129,7 +141,7 @@ namespace AntViewer
 
         void massRebootToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var result = new ConfirmDialog { ConfirmSubject = "Mass Reboot", ConfirmMessage = "Are you sure you want to reboot all miners?" }.ShowDialog();
+            var result = new ConfirmDialog { ConfirmSubject = "Mass Restart", ConfirmMessage = "Are you sure you want to restart all miners?" }.ShowDialog();
             if (!result.Equals(DialogResult.OK)) return;
 
             var errors = new List<string>();
@@ -150,7 +162,7 @@ namespace AntViewer
             {
                 new ErrorDialog
                 {
-                    ErrorSubject = "Error rebooting miner(s)",
+                    ErrorSubject = "Error restarting miner(s)",
                     ErrorMessage = "Some miners error when trying to restart. Hover to see error messages.",
                     LongErrorMessage = errors.Aggregate((w, j) => string.Format("{0}\r\n{1}", w, j))
                 }.ShowDialog();
@@ -253,6 +265,7 @@ namespace AntViewer
                 var summary = AntminerConnector.GetSummary(IPAddress.Parse(ant.IpAddress));
                 var stats = AntminerConnector.GetStats(IPAddress.Parse(ant.IpAddress));
                 var pools = AntminerConnector.GetPools(IPAddress.Parse(ant.IpAddress));
+                var devs = AntminerConnector.GetDev(IPAddress.Parse(ant.IpAddress));
 
                 var hwError = Convert.ToInt32(summary["Hardware Errors"].ToString());
                 var diffA = Convert.ToDouble(summary["Difficulty Accepted"].ToString());
@@ -277,6 +290,8 @@ namespace AntViewer
 
                 status.MobileMinerMiningStatistics = new MiningStatistics
                 {
+                    Index = 0,
+                    DeviceID = Convert.ToInt32(devs["ID"]),
                     AcceptedShares = (int)accepted,
                     Algorithm = "SHA-256",
                     Kind = "ASC",
@@ -401,12 +416,6 @@ namespace AntViewer
                 var settings = SettingsService.GetSettings();
                 if (settings.MobileMiner.Enabled)
                 {
-                    for (var i = 0; i < _antMiningStatisticses.Count; i++)
-                    {
-                        _antMiningStatisticses[i].Index = i;
-                        _antMiningStatisticses[i].DeviceID = i;
-                    }
-
                     try
                     {
                         ApiContext.SubmitMiningStatistics(_mobileMinerUrl,
@@ -598,6 +607,26 @@ namespace AntViewer
                     ErrorMessage = "Unable to open browser to mobileminer web dashboard."
                 }.ShowDialog();
             }
+        }
+
+        #endregion
+
+        #region Notify Events
+
+        private void mnuMain_Resize(object sender, EventArgs e)
+        {
+            if (!WindowState.Equals(FormWindowState.Minimized)) return;
+
+            Hide();
+            _notifyIcon.Visible = true;
+            _notifyIcon.ShowBalloonTip(3000);
+        }
+
+        void _notifyIcon_DoubleClick(object sender, EventArgs e)
+        {
+            Show();
+            _notifyIcon.Visible = false;
+            WindowState = FormWindowState.Maximized;
         }
 
         #endregion

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AntViewer));
             this.windows8Theme1 = new Telerik.WinControls.Themes.Windows8Theme();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.grdAntminers = new Telerik.WinControls.UI.RadGridView();
@@ -198,6 +199,7 @@
             this.mnuMain.Size = new System.Drawing.Size(1302, 24);
             this.mnuMain.TabIndex = 1;
             this.mnuMain.Text = "menuStrip1";
+            this.mnuMain.Resize += new System.EventHandler(this.mnuMain_Resize);
             // 
             // fileToolStripMenuItem
             // 
@@ -233,8 +235,8 @@
             // massRebootToolStripMenuItem
             // 
             this.massRebootToolStripMenuItem.Name = "massRebootToolStripMenuItem";
-            this.massRebootToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
-            this.massRebootToolStripMenuItem.Text = "Mass Reboot";
+            this.massRebootToolStripMenuItem.Size = new System.Drawing.Size(85, 20);
+            this.massRebootToolStripMenuItem.Text = "Mass Restart";
             this.massRebootToolStripMenuItem.Click += new System.EventHandler(this.massRebootToolStripMenuItem_Click);
             // 
             // mobileMinerToolStripMenuItem
@@ -267,6 +269,7 @@
             this.ClientSize = new System.Drawing.Size(1302, 739);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.mnuMain);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "AntViewer";
             // 
             // 

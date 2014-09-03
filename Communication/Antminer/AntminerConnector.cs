@@ -11,6 +11,8 @@ namespace AntViewer.Communication.Antminer
 {
     public static class AntminerConnector
     {
+        private const int MaxResponseTime = 500;
+
         public static IDictionary<string, object> GetStats(IPAddress ip)
         {
             var client = new TcpClient();
@@ -18,7 +20,7 @@ namespace AntViewer.Communication.Antminer
             {
                 var result = client.BeginConnect(ip, 4028, null, null);
 
-                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, 300)))
+                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, MaxResponseTime)))
                     throw new Exception("Can't connect to miner...");
             }
             catch (Exception)
@@ -51,6 +53,46 @@ namespace AntViewer.Communication.Antminer
             }
         }
 
+        public static IDictionary<string, object> GetDev(IPAddress ip)
+        {
+            var client = new TcpClient();
+            try
+            {
+                var result = client.BeginConnect(ip, 4028, null, null);
+
+                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, MaxResponseTime)))
+                    throw new Exception("Can't connect to miner...");
+            }
+            catch (Exception)
+            {
+                throw new Exception("Can't connect to miner...");
+            }
+
+            using (var os = client.GetStream())
+            {
+                var data = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(new { command = "devs" }));
+                os.Write(data, 0, data.Length);
+                os.Flush();
+
+                var buffer = new byte[1024];
+                using (var ms = new MemoryStream())
+                {
+                    int read;
+                    while ((read = os.Read(buffer, 0, buffer.Length)) > 0)
+                        ms.Write(buffer, 0, read);
+
+                    var msg = Encoding.ASCII.GetString(ms.ToArray());
+                    if (string.IsNullOrEmpty(msg))
+                        return new Dictionary<string, object>();
+
+                    var ana = new { DEVS = new List<IDictionary<string, object>>() };
+                    var response = JsonConvert.DeserializeAnonymousType(msg.Substring(0, msg.Length - 2), ana);
+
+                    return response.DEVS[0];
+                }
+            }
+        }
+
         public static IDictionary<string, object> GetSummary(IPAddress ip)
         {
             var client = new TcpClient();
@@ -58,7 +100,7 @@ namespace AntViewer.Communication.Antminer
             {
                 var result = client.BeginConnect(ip, 4028, null, null);
 
-                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, 300)))
+                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, MaxResponseTime)))
                     throw new Exception("Can't connect to miner...");
             }
             catch (Exception)
@@ -98,7 +140,7 @@ namespace AntViewer.Communication.Antminer
             {
                 var result = client.BeginConnect(ip, 4028, null, null);
 
-                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, 300)))
+                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, MaxResponseTime)))
                     throw new Exception("Can't connect to miner...");
             }
             catch (Exception)
@@ -146,7 +188,7 @@ namespace AntViewer.Communication.Antminer
             {
                 var result = client.BeginConnect(ip, 4028, null, null);
 
-                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, 300)))
+                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, MaxResponseTime)))
                     return false;
             }
             catch (Exception)
@@ -185,7 +227,7 @@ namespace AntViewer.Communication.Antminer
             {
                 var result = client.BeginConnect(ip, 4028, null, null);
 
-                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, 300)))
+                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, MaxResponseTime)))
                     throw new Exception("Can't connect to miner...");
             }
             catch (Exception)
