@@ -13,6 +13,7 @@ namespace AntViewer.API.Settings
         public string Password { get; set; }
         public string FromAddress { get; set; }
         public string FromName { get; set; }
+        public MobileMiner MobileMiner { get; set; }
         public List<AbstractAlert> Alerts { get; set; }
 
         public bool HasAlert<T>() where T : IAlert
@@ -29,6 +30,7 @@ namespace AntViewer.API.Settings
         public Settings()
         {
             Alerts = new List<AbstractAlert>();
+            MobileMiner = new MobileMiner {Enabled = false};
         }
     }
 }

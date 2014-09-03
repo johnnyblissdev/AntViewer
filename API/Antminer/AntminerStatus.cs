@@ -1,4 +1,5 @@
 ﻿using System;
+using MultiMiner.MobileMiner.Data;
 
 namespace AntViewer.API.Antminer
 {
@@ -39,5 +40,6 @@ namespace AntViewer.API.Antminer
 
         public string Freq { get; set; }
         public string AsicStatus { get; set; }
+        public MiningStatistics MobileMinerMiningStatistics { get; set; }
     }
 }

@@ -66,11 +66,18 @@
     <Reference Include="Ionic.Zip">
       <HintPath>..\ThirdParty\Ionic.Zip.dll</HintPath>
     </Reference>
+    <Reference Include="MultiMiner.MobileMiner">
+      <HintPath>..\ThirdParty\MultiMiner.MobileMiner.dll</HintPath>
+    </Reference>
+    <Reference Include="MultiMiner.Utility">
+      <HintPath>..\ThirdParty\MultiMiner.Utility.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\DSO-Sentinel Tools\DSO-Sentinel\DSO-Sentinel\ThirdParty\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -120,6 +127,7 @@
     <Compile Include="API\Antminer\Antminer.cs" />
     <Compile Include="API\Antminer\Antminers.cs" />
     <Compile Include="API\Antminer\AntminerStatus.cs" />
+    <Compile Include="API\Settings\MobileMiner.cs" />
     <Compile Include="API\Settings\Settings.cs" />
     <Compile Include="Communication\Antminer\AntminerConnector.cs" />
     <Compile Include="DataService\Antminer\AntminerService.cs" />
@@ -166,6 +174,12 @@
     <Compile Include="Forms\Common\InfoDialog.Designer.cs">
       <DependentUpon>InfoDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\MobileMiner\MobileMiner.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MobileMiner\MobileMiner.Designer.cs">
+      <DependentUpon>MobileMiner.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserControls\Alert\MinerDown.cs">
@@ -203,6 +217,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Common\InfoDialog.resx">
       <DependentUpon>InfoDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MobileMiner\MobileMiner.resx">
+      <DependentUpon>MobileMiner.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -253,6 +270,7 @@
   <ItemGroup>
     <Content Include="Images\Icons\errorIcon.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

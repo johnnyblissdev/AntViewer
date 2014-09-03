@@ -1,19 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Timers;
 using System.Windows.Forms;
 using AntViewer.API.Antminer;
+using AntViewer.API.Settings;
 using AntViewer.Communication.Antminer;
 using AntViewer.DataService.Antminer;
+using AntViewer.DataService.Settings;
 using AntViewer.Forms.Alerts;
 using AntViewer.Forms.Antminer;
 using AntViewer.Forms.Common;
+using MultiMiner.MobileMiner;
+using MultiMiner.MobileMiner.Data;
 using Telerik.WinControls;
 using Telerik.WinControls.UI;
+using MobileMiner = AntViewer.Forms.MobileMiner.MobileMiner;
 using Timer = System.Timers.Timer;
 
 namespace AntViewer
@@ -29,7 +35,11 @@ namespace AntViewer
         private int _refreshRowCount = 0;
 
         private Antminers _antminers = new Antminers();
-        
+        private List<MiningStatistics> _antMiningStatisticses = new List<MiningStatistics>();
+
+        private readonly string _mobileMinerUrl = ConfigurationManager.AppSettings["MobileMiner.Url"] ?? "https://api.mobileminerapp.com";
+        private const string MobileMinerApiKey = "*************";
+
         public AntViewer()
         {
             InitializeComponent();
@@ -194,6 +204,7 @@ namespace AntViewer
             _antminers = AntminerService.GetAntminers();
 
             _refreshRowCount = 0;
+            _antMiningStatisticses = new List<MiningStatistics>();
 
             if (grdAntminers.Rows.Count == 0)
                 PopulateGrid(_antminers);
@@ -242,6 +253,7 @@ namespace AntViewer
             {
                 var summary = AntminerConnector.GetSummary(IPAddress.Parse(ant.IpAddress));
                 var stats = AntminerConnector.GetStats(IPAddress.Parse(ant.IpAddress));
+                var pools = AntminerConnector.GetPools(IPAddress.Parse(ant.IpAddress));
 
                 var hwError = Convert.ToInt32(summary["Hardware Errors"].ToString());
                 var diffA = Convert.ToDouble(summary["Difficulty Accepted"].ToString());
@@ -263,8 +275,40 @@ namespace AntViewer
                 status.Temps = string.Format("{0}, {1}", stats["temp1"], stats["temp2"]);
                 status.Freq = stats["frequency"].ToString();
                 status.AsicStatus = string.Format("{0} - {1}", stats["chain_acs1"], stats["chain_acs2"]);
+
+                status.MobileMinerMiningStatistics = new MiningStatistics
+                {
+                    AcceptedShares = (int)accepted,
+                    Algorithm = "SHA-256",
+                    Kind = "ASC",
+                    Appliance = false,
+                    AverageHashrate = status.GhsAv*1000000,
+                    CurrentHashrate = status.Ghs5S*1000000,
+                    Enabled = true,
+                    FanSpeed = Convert.ToInt32(stats["fan1"]),
+                    FullName = status.Name,
+                    HardwareErrors = hwError,
+                    HardwareErrorsPercent = status.HardwareErrorPercentage,
+                    MachineName = status.Name,
+                    MinerName = "Spiceminer's Ant Viewer",
+                    Name = status.Name,
+                    RejectedShares = (int)rejects,
+                    RejectedSharesPercent = status.RejectPercentage,
+                    Status = status.Status,
+                    Temperature = GetHighestTemp(status.Temps),
+                    Utility = Convert.ToDouble(summary["Work Utility"]),
+                    FanPercent = 0,
+                    GpuActivity = 0,
+                    GpuClock = 0,
+                    GpuVoltage = 0,
+                    Intensity = "0",
+                    MemoryClock = 0,
+                    PoolIndex = 0,
+                    PoolName = pools[0]["URL"].ToString(),
+                    PowerTune = 0,
+                };
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 status.Status = "Dead";
                 status.Ghs5S = 0;
@@ -338,6 +382,9 @@ namespace AntViewer
                 }));
             }
 
+            if(status.MobileMinerMiningStatistics != null)
+                _antMiningStatisticses.Add(status.MobileMinerMiningStatistics);
+            
             _refreshRowCount++;
             if (_refreshRowCount == _antminers.Antminer.Count)
             {
@@ -351,6 +398,22 @@ namespace AntViewer
 
                 CountdownTimer.Enabled = true;
                 CountdownTimer.Start();
+
+                var settings = SettingsService.GetSettings();
+                if (settings.MobileMiner.Enabled)
+                {
+                    for (var i = 0; i < _antMiningStatisticses.Count; i++)
+                    {
+                        _antMiningStatisticses[i].Index = i;
+                        _antMiningStatisticses[i].DeviceID = i;
+                    }
+
+                    ApiContext.SubmitMiningStatistics(_mobileMinerUrl,
+                        MobileMinerApiKey,
+                        settings.MobileMiner.EmailAddress,
+                        settings.MobileMiner.ApplicationKey,
+                        _antMiningStatisticses);
+                }
             }
         }
 
@@ -470,6 +533,24 @@ namespace AntViewer
             return allTemps.Count < 1 ? "-" : string.Format("{0}c", allTemps.Max());
         }
 
+        public double GetHighestTemp(string temps)
+        {
+            try
+            {
+                var allTemps = temps.Replace(" ", string.Empty).Split(new[] { ',' });
+                var temp1 = Convert.ToInt32(allTemps[0]);
+                var temp2 = Convert.ToInt32(allTemps[1]);
+
+                return temp1 > temp2 ? temp1 : temp2;
+            }
+            catch (Exception)
+            {
+                
+            }
+
+            return 0;
+        }
+
         public string GetFormattedHighestHardwareErrorCount()
         {
             if (grdAntminers.RowCount < 1) return "-";
@@ -488,6 +569,29 @@ namespace AntViewer
         private void emailSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new ManageAlerts().ShowDialog();
+        }
+
+        private void setupToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new MobileMiner().ShowDialog();
+        }
+
+        private void onlineStatsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var url = ConfigurationManager.AppSettings["MobileMiner.DashboardUrl"] ?? "http://web.mobileminerapp.com/machines";
+                var pInfo = new ProcessStartInfo(url);
+                Process.Start(pInfo);
+            }
+            catch (Exception)
+            {
+                new ErrorDialog
+                {
+                    ErrorSubject = "Unable to open browser",
+                    ErrorMessage = "Unable to open browser to mobileminer web dashboard."
+                }.ShowDialog();
+            }
         }
 
         #endregion

@@ -46,6 +46,9 @@
             this.alertsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.emailSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.massRebootToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mobileMinerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.onlineStatsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grdAntminers)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.grdAntminers.MasterTemplate)).BeginInit();
@@ -188,7 +191,8 @@
             this.mnuMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.alertsToolStripMenuItem,
-            this.massRebootToolStripMenuItem});
+            this.massRebootToolStripMenuItem,
+            this.mobileMinerToolStripMenuItem});
             this.mnuMain.Location = new System.Drawing.Point(0, 0);
             this.mnuMain.Name = "mnuMain";
             this.mnuMain.Size = new System.Drawing.Size(1302, 24);
@@ -232,6 +236,29 @@
             this.massRebootToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
             this.massRebootToolStripMenuItem.Text = "Mass Reboot";
             this.massRebootToolStripMenuItem.Click += new System.EventHandler(this.massRebootToolStripMenuItem_Click);
+            // 
+            // mobileMinerToolStripMenuItem
+            // 
+            this.mobileMinerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.setupToolStripMenuItem,
+            this.onlineStatsToolStripMenuItem});
+            this.mobileMinerToolStripMenuItem.Name = "mobileMinerToolStripMenuItem";
+            this.mobileMinerToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
+            this.mobileMinerToolStripMenuItem.Text = "MobileMiner";
+            // 
+            // setupToolStripMenuItem
+            // 
+            this.setupToolStripMenuItem.Name = "setupToolStripMenuItem";
+            this.setupToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.setupToolStripMenuItem.Text = "Setup";
+            this.setupToolStripMenuItem.Click += new System.EventHandler(this.setupToolStripMenuItem_Click);
+            // 
+            // onlineStatsToolStripMenuItem
+            // 
+            this.onlineStatsToolStripMenuItem.Name = "onlineStatsToolStripMenuItem";
+            this.onlineStatsToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.onlineStatsToolStripMenuItem.Text = "View Online Stats";
+            this.onlineStatsToolStripMenuItem.Click += new System.EventHandler(this.onlineStatsToolStripMenuItem_Click);
             // 
             // AntViewer
             // 
@@ -290,6 +317,9 @@
         private System.Windows.Forms.ToolStripMenuItem alertsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem emailSettingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem massRebootToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mobileMinerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem setupToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem onlineStatsToolStripMenuItem;
 
 
     }
