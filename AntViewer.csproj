@@ -123,6 +123,7 @@
     <Compile Include="API\Alert\AbstractAlert.cs" />
     <Compile Include="API\Alert\AlertType.cs" />
     <Compile Include="API\Alert\IAlert.cs" />
+    <Compile Include="API\Alert\MinerAsicStatusAlert.cs" />
     <Compile Include="API\Alert\MinerDownAlert.cs" />
     <Compile Include="API\Alert\MInerOverTempatureAlert.cs" />
     <Compile Include="API\Antminer\Antminer.cs" />
@@ -132,6 +133,7 @@
     <Compile Include="API\Settings\MobileMiner.cs" />
     <Compile Include="API\Settings\Settings.cs" />
     <Compile Include="Communication\Antminer\AntminerConnector.cs" />
+    <Compile Include="Communication\BTC\BtcPriceService.cs" />
     <Compile Include="Communication\Email\EmailService.cs" />
     <Compile Include="DataService\Antminer\AntminerService.cs" />
     <Compile Include="DataService\Settings\SettingsService.cs" />
@@ -185,6 +187,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserControls\Alert\MinerAsicStatus.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Alert\MinerAsicStatus.Designer.cs">
+      <DependentUpon>MinerAsicStatus.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\Alert\MinerOverTempature.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -242,6 +250,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="UserControls\Alert\MinerAsicStatus.resx">
+      <DependentUpon>MinerAsicStatus.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UserControls\Alert\MinerDown.resx">
       <DependentUpon>MinerDown.cs</DependentUpon>
     </EmbeddedResource>

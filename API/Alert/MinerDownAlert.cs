@@ -10,6 +10,8 @@ namespace AntViewer.API.Alert
     {
         private const string EmailSubject = "Miner {0}/{1} is dead!";
         private const string EmailMessage = "Miner {0}/{1} has gone down at {2}!";
+        private const string UpEmailSubject = "Miner {0}/{1} is back up!";
+        private const string UpEmailMessage = "Miner {0}/{1} has came back up at {2}!"; 
         
         public MinerDownAlert()
         {
@@ -24,13 +26,14 @@ namespace AntViewer.API.Alert
                 AlertedAntIds.Add(ant.Id);
             }
 
-            foreach (var id in (from antId in AlertedAntIds
+            foreach (var ant in (from antId in AlertedAntIds
                 let ant = antminerStatuses.SingleOrDefault(x => x.Id.Equals(antId))
                 where ant != null
                 where ant.Status.Equals("Alive")
-                select antId).ToList())
+                select ant).ToList())
             {
-                AlertedAntIds.Remove(id);
+                EmailService.SendAlertEmail(string.Format(UpEmailSubject, ant.Name, ant.IpAddress), string.Format(UpEmailMessage, ant.Name, ant.IpAddress, DateTime.Now.ToString("h:mm:ss tt")));
+                AlertedAntIds.Remove(ant.Id);
             }
         }
     }

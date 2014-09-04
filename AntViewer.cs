@@ -10,12 +10,12 @@ using System.Windows.Forms;
 using AntViewer.API.Antminer;
 using AntViewer.API.Settings;
 using AntViewer.Communication.Antminer;
+using AntViewer.Communication.BTC;
 using AntViewer.DataService.Antminer;
 using AntViewer.DataService.Settings;
 using AntViewer.Forms.Alerts;
 using AntViewer.Forms.Antminer;
 using AntViewer.Forms.Common;
-using AntViewer.UserControls.Alert;
 using MultiMiner.MobileMiner;
 using MultiMiner.MobileMiner.Data;
 using Telerik.WinControls;
@@ -28,11 +28,11 @@ namespace AntViewer
     public partial class AntViewer : RadForm
     {
         private readonly Timer _refreshTimer = new Timer(1000);
-        private readonly Timer _statsTimer = new Timer(1000);
+        private readonly Timer _statsTimer = new Timer(2000);
         private readonly Timer _countdownTimer = new Timer(1000);
         private readonly Timer _stuckTimer = new Timer(60000);
+        private readonly Timer _btcTimer = new Timer(1000);
         
-
         private DateTime _lastRefreshed;
         private int _rowCount = 1;
         private int _refreshRowCount = 0;
@@ -59,12 +59,21 @@ namespace AntViewer
 
             WindowState = FormWindowState.Maximized;
 
+            #region BTC Timer
+
+            _btcTimer.Enabled = true;
+            _btcTimer.AutoReset = true;
+            _btcTimer.Elapsed += _btcTimer_Elapsed;
+            _btcTimer.Start();
+
+            #endregion
+
             #region Stuck Timer
 
             _stuckTimer.Enabled = true;
             _stuckTimer.AutoReset = true;
             _stuckTimer.Elapsed += _stuckTimer_Elapsed;
-            //_stuckTimer.Start();
+            _stuckTimer.Start();
 
             #endregion
 
@@ -97,7 +106,7 @@ namespace AntViewer
             grdAntminers.AutoGenerateColumns = false;
             grdAntminers.AutoSizeColumnsMode = GridViewAutoSizeColumnsMode.Fill;
             grdAntminers.AllowAddNewRow = false;
-            grdAntminers.EnableGrouping = false;
+            grdAntminers.EnableGrouping = true;
             grdAntminers.AllowCellContextMenu = false;
             grdAntminers.AllowAutoSizeColumns = true;
             grdAntminers.ContextMenu = contextMenu;
@@ -436,7 +445,7 @@ namespace AntViewer
             if (_refreshRowCount == _antminers.Antminer.Count)
             {
                 _refreshTimer.Interval = 60000;
-                //_refreshTimer.Start();
+                _refreshTimer.Start();
 
                 _statsTimer.Enabled = true;
                 _statsTimer.Start();
@@ -465,6 +474,32 @@ namespace AntViewer
                     }
                 }
             }
+        }
+
+        #endregion
+
+        #region BTC Price Background Worker
+
+        void _btcTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            var btcBackgroundWorker = new BackgroundWorker();
+            btcBackgroundWorker.DoWork += btcBackgroundWorker_DoWork;
+            btcBackgroundWorker.RunWorkerCompleted += btcBackgroundWorker_RunWorkerCompleted;
+            btcBackgroundWorker.RunWorkerAsync();
+
+            _btcTimer.Interval = 30000;
+        }
+
+        void btcBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            double btcPrice;
+            double.TryParse(e.Result.ToString(), out btcPrice);
+            btcToolTipMenu.Text = double.TryParse(e.Result.ToString(), out btcPrice) ? string.Format("BTC: ${0}", btcPrice) : "BTC: ---";
+        }
+
+        void btcBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            e.Result = BtcPriceService.GetBtcPrice();
         }
 
         #endregion

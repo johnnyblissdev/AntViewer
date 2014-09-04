@@ -51,6 +51,7 @@
             this.mobileMinerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.onlineStatsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btcToolTipMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grdAntminers)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.grdAntminers.MasterTemplate)).BeginInit();
@@ -194,7 +195,8 @@
             this.fileToolStripMenuItem,
             this.alertsToolStripMenuItem,
             this.massRebootToolStripMenuItem,
-            this.mobileMinerToolStripMenuItem});
+            this.mobileMinerToolStripMenuItem,
+            this.btcToolTipMenu});
             this.mnuMain.Location = new System.Drawing.Point(0, 0);
             this.mnuMain.Name = "mnuMain";
             this.mnuMain.Size = new System.Drawing.Size(1302, 24);
@@ -229,14 +231,14 @@
             // emailSettingsToolStripMenuItem1
             // 
             this.emailSettingsToolStripMenuItem1.Name = "emailSettingsToolStripMenuItem1";
-            this.emailSettingsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.emailSettingsToolStripMenuItem1.Size = new System.Drawing.Size(148, 22);
             this.emailSettingsToolStripMenuItem1.Text = "Email Settings";
             this.emailSettingsToolStripMenuItem1.Click += new System.EventHandler(this.emailSettingsToolStripMenuItem1_Click);
             // 
             // emailSettingsToolStripMenuItem
             // 
             this.emailSettingsToolStripMenuItem.Name = "emailSettingsToolStripMenuItem";
-            this.emailSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.emailSettingsToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.emailSettingsToolStripMenuItem.Text = "Alert Settings";
             this.emailSettingsToolStripMenuItem.Click += new System.EventHandler(this.emailSettingsToolStripMenuItem_Click);
             // 
@@ -269,6 +271,12 @@
             this.onlineStatsToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
             this.onlineStatsToolStripMenuItem.Text = "View Online Stats";
             this.onlineStatsToolStripMenuItem.Click += new System.EventHandler(this.onlineStatsToolStripMenuItem_Click);
+            // 
+            // btcToolTipMenu
+            // 
+            this.btcToolTipMenu.Name = "btcToolTipMenu";
+            this.btcToolTipMenu.Size = new System.Drawing.Size(62, 20);
+            this.btcToolTipMenu.Text = "BTC: ---";
             // 
             // AntViewer
             // 
@@ -332,6 +340,7 @@
         private System.Windows.Forms.ToolStripMenuItem setupToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem onlineStatsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem emailSettingsToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem btcToolTipMenu;
 
 
     }

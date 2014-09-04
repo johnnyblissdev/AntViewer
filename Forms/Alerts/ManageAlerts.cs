@@ -57,6 +57,12 @@ namespace AntViewer.Forms.Alerts
                 ctrl.Finished += ctrl_Finished;
                 pnlAlertEditor.Controls.Add(ctrl);
             }
+            else if (ddlAlertType.SelectedItem.Text.Equals(Utilities.GetEnumDescription(AlertType.MinerAsicStatus)))
+            {
+                var ctrl = new MinerAsicStatus();
+                ctrl.Finished += ctrl_Finished;
+                pnlAlertEditor.Controls.Add(ctrl);
+            }
         }
 
         void ctrl_Finished(object source)

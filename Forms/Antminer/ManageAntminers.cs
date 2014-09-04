@@ -128,6 +128,17 @@ namespace AntViewer.Forms.Antminer
         
         private void btnAdd_Click(object sender, System.EventArgs e)
         {
+            if (Antminers.Antminer.Select(x => x.IpAddress).Contains(txtIpAddress.Text))
+            {
+                new ErrorDialog
+                {
+                    ErrorSubject = "Error adding Antminer",
+                    ErrorMessage = string.Format("Antminer with Ip {0} already has been added.", txtIpAddress.Text)
+                }.ShowDialog();
+
+                return;
+            }
+
             var antminer = new API.Antminer.Antminer
             {
                 Id = Guid.NewGuid(),

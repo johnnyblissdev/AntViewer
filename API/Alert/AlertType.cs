@@ -7,6 +7,8 @@ namespace AntViewer.API.Alert
         [Description("Miner Down")]
         MinerDown = 0,
         [Description("Miner Over Tempature")]
-        MinerOverTempature = 1
+        MinerOverTempature = 1,
+        [Description("Miner ASIC Status")]
+        MinerAsicStatus = 2
     }
 }

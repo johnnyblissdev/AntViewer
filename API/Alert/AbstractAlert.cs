@@ -8,6 +8,7 @@ namespace AntViewer.API.Alert
 {
     [XmlInclude(typeof(MinerDownAlert))]
     [XmlInclude(typeof(MinerOverTempatureAlert))]
+    [XmlInclude(typeof(MinerAsicStatusAlert))]
     public abstract class AbstractAlert : IAlert
     {
         public bool Enabled { get; set; }
