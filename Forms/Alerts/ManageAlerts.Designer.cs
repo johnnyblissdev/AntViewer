@@ -28,17 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ManageAlerts));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.btnEmailSettings = new Telerik.WinControls.UI.RadButton();
             this.pnlAlertType = new System.Windows.Forms.Panel();
             this.pnlAlertEditor = new System.Windows.Forms.Panel();
             this.lblAlertType = new Telerik.WinControls.UI.RadLabel();
             this.ddlAlertType = new Telerik.WinControls.UI.RadDropDownList();
             this.grdAlerts = new Telerik.WinControls.UI.RadGridView();
             this.tableLayoutPanel1.SuspendLayout();
-            this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.btnEmailSettings)).BeginInit();
             this.pnlAlertType.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lblAlertType)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ddlAlertType)).BeginInit();
@@ -50,39 +47,17 @@
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Controls.Add(this.panel2, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.pnlAlertType, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.grdAlerts, 0, 2);
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 342F));
+            this.tableLayoutPanel1.Controls.Add(this.pnlAlertType, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.grdAlerts, 0, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
+            this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 152F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(342, 437);
             this.tableLayoutPanel1.TabIndex = 0;
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.btnEmailSettings);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(3, 3);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(336, 33);
-            this.panel2.TabIndex = 4;
-            // 
-            // btnEmailSettings
-            // 
-            this.btnEmailSettings.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEmailSettings.Location = new System.Drawing.Point(0, 0);
-            this.btnEmailSettings.Name = "btnEmailSettings";
-            this.btnEmailSettings.Size = new System.Drawing.Size(155, 32);
-            this.btnEmailSettings.TabIndex = 2;
-            this.btnEmailSettings.Text = "Email Settings";
-            this.btnEmailSettings.ThemeName = "Windows8";
-            this.btnEmailSettings.Click += new System.EventHandler(this.btnEmailSettings_Click);
             // 
             // pnlAlertType
             // 
@@ -90,7 +65,7 @@
             this.pnlAlertType.Controls.Add(this.lblAlertType);
             this.pnlAlertType.Controls.Add(this.ddlAlertType);
             this.pnlAlertType.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlAlertType.Location = new System.Drawing.Point(3, 42);
+            this.pnlAlertType.Location = new System.Drawing.Point(3, 3);
             this.pnlAlertType.Name = "pnlAlertType";
             this.pnlAlertType.Size = new System.Drawing.Size(336, 146);
             this.pnlAlertType.TabIndex = 5;
@@ -126,9 +101,9 @@
             // grdAlerts
             // 
             this.grdAlerts.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grdAlerts.Location = new System.Drawing.Point(3, 194);
+            this.grdAlerts.Location = new System.Drawing.Point(3, 155);
             this.grdAlerts.Name = "grdAlerts";
-            this.grdAlerts.Size = new System.Drawing.Size(336, 240);
+            this.grdAlerts.Size = new System.Drawing.Size(336, 279);
             this.grdAlerts.TabIndex = 6;
             this.grdAlerts.Text = "radGridView1";
             this.grdAlerts.ThemeName = "Windows8";
@@ -139,6 +114,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(342, 437);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ManageAlerts";
             // 
             // 
@@ -149,8 +125,6 @@
             this.ThemeName = "Windows8";
             this.Load += new System.EventHandler(this.ManageAlerts_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.btnEmailSettings)).EndInit();
             this.pnlAlertType.ResumeLayout(false);
             this.pnlAlertType.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lblAlertType)).EndInit();
@@ -165,8 +139,6 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Panel panel2;
-        private Telerik.WinControls.UI.RadButton btnEmailSettings;
         private System.Windows.Forms.Panel pnlAlertType;
         private Telerik.WinControls.UI.RadDropDownList ddlAlertType;
         private Telerik.WinControls.UI.RadLabel lblAlertType;

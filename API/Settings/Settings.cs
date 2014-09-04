@@ -6,13 +6,7 @@ namespace AntViewer.API.Settings
 {
     public class Settings
     {
-        public string SmptServer { get; set; }
-        public string SmptServerPort { get; set; }
-        public bool UseSsl { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string FromAddress { get; set; }
-        public string FromName { get; set; }
+        public Email Email { get; set; }
         public MobileMiner MobileMiner { get; set; }
         public List<AbstractAlert> Alerts { get; set; }
 
@@ -27,10 +21,16 @@ namespace AntViewer.API.Settings
                 Alerts.Remove(a);
         }
 
+        public IAlert GetAlert<T>() where T : AbstractAlert
+        {
+            return Alerts.OfType<T>().SingleOrDefault();
+        }
+
         public Settings()
         {
             Alerts = new List<AbstractAlert>();
             MobileMiner = new MobileMiner {Enabled = false};
+            Email = new Email();
         }
     }
 }

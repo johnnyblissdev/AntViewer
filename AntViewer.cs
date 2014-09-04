@@ -8,12 +8,14 @@ using System.Net;
 using System.Timers;
 using System.Windows.Forms;
 using AntViewer.API.Antminer;
+using AntViewer.API.Settings;
 using AntViewer.Communication.Antminer;
 using AntViewer.DataService.Antminer;
 using AntViewer.DataService.Settings;
 using AntViewer.Forms.Alerts;
 using AntViewer.Forms.Antminer;
 using AntViewer.Forms.Common;
+using AntViewer.UserControls.Alert;
 using MultiMiner.MobileMiner;
 using MultiMiner.MobileMiner.Data;
 using Telerik.WinControls;
@@ -25,15 +27,18 @@ namespace AntViewer
 {
     public partial class AntViewer : RadForm
     {
-        public Timer RefreshTimer = new Timer(1000);
-        public Timer StatsTimer = new Timer(1000);
-        public Timer CountdownTimer = new Timer(1000);
+        private readonly Timer _refreshTimer = new Timer(1000);
+        private readonly Timer _statsTimer = new Timer(1000);
+        private readonly Timer _countdownTimer = new Timer(1000);
+        private readonly Timer _stuckTimer = new Timer(60000);
+        
 
         private DateTime _lastRefreshed;
         private int _rowCount = 1;
         private int _refreshRowCount = 0;
 
         private Antminers _antminers = new Antminers();
+        private List<AntminerStatus> _antminerStatuses = new List<AntminerStatus>(); 
         private List<MiningStatistics> _antMiningStatisticses = new List<MiningStatistics>();
 
         private readonly string _mobileMinerUrl = ConfigurationManager.AppSettings["MobileMiner.Url"] ?? "https://api.mobileminerapp.com";
@@ -53,6 +58,15 @@ namespace AntViewer
             ThemeResolutionService.ApplicationThemeName = "Windows8";
 
             WindowState = FormWindowState.Maximized;
+
+            #region Stuck Timer
+
+            _stuckTimer.Enabled = true;
+            _stuckTimer.AutoReset = true;
+            _stuckTimer.Elapsed += _stuckTimer_Elapsed;
+            //_stuckTimer.Start();
+
+            #endregion
 
             #region Notify Icon
 
@@ -197,6 +211,22 @@ namespace AntViewer
 
         #region Timer Events
 
+        void _stuckTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (DateTime.Now.Subtract(_lastRefreshed).Seconds <= 120) return;
+
+            _refreshTimer.Interval = 100;
+            _refreshTimer.Start();
+
+            _statsTimer.Enabled = true;
+            _statsTimer.Start();
+
+            _lastRefreshed = DateTime.Now;
+
+            _countdownTimer.Enabled = true;
+            _countdownTimer.Start();
+        }
+
         void CountdownTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             var timeLeft = DateTime.Now.Subtract(_lastRefreshed).Seconds;
@@ -216,15 +246,16 @@ namespace AntViewer
 
             _refreshRowCount = 0;
             _antMiningStatisticses = new List<MiningStatistics>();
+            _antminerStatuses = new List<AntminerStatus>();
 
             if (grdAntminers.Rows.Count == 0)
                 PopulateGrid(_antminers);
 
-            StatsTimer.Enabled = true;
-            StatsTimer.Stop();
+            _statsTimer.Enabled = true;
+            _statsTimer.Stop();
 
-            CountdownTimer.Enabled = false;
-            CountdownTimer.Stop();
+            _countdownTimer.Enabled = false;
+            _countdownTimer.Stop();
 
             foreach (var ant in _antminers.Antminer)
             {
@@ -399,21 +430,25 @@ namespace AntViewer
             if(status.MobileMinerMiningStatistics != null)
                 _antMiningStatisticses.Add(status.MobileMinerMiningStatistics);
             
+            _antminerStatuses.Add(status);
+
             _refreshRowCount++;
             if (_refreshRowCount == _antminers.Antminer.Count)
             {
-                RefreshTimer.Interval = 60000;
-                RefreshTimer.Start();
+                _refreshTimer.Interval = 60000;
+                //_refreshTimer.Start();
 
-                StatsTimer.Enabled = true;
-                StatsTimer.Start();
+                _statsTimer.Enabled = true;
+                _statsTimer.Start();
 
                 _lastRefreshed = DateTime.Now;
 
-                CountdownTimer.Enabled = true;
-                CountdownTimer.Start();
+                _countdownTimer.Enabled = true;
+                _countdownTimer.Start();
 
                 var settings = SettingsService.GetSettings();
+                RunAlerts(settings);
+
                 if (settings.MobileMiner.Enabled)
                 {
                     try
@@ -442,12 +477,12 @@ namespace AntViewer
 
             _rowCount = 1;
             grdAntminers.Rows.Clear();
-            RefreshTimer.Interval = 1000;
+            _refreshTimer.Interval = 1000;
         }
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
-            RefreshTimer.Interval = 100;
+            _refreshTimer.Interval = 100;
         }
 
         #endregion
@@ -456,17 +491,17 @@ namespace AntViewer
 
         public void BeginMonitoring()
         {
-            RefreshTimer.Elapsed += RefreshTimer_Elapsed;
-            RefreshTimer.AutoReset = false;
-            RefreshTimer.Start();
+            _refreshTimer.Elapsed += RefreshTimer_Elapsed;
+            _refreshTimer.AutoReset = false;
+            _refreshTimer.Start();
 
-            StatsTimer.Elapsed += StatsTimer_Elapsed;
-            StatsTimer.AutoReset = true;
-            StatsTimer.Enabled = false;
+            _statsTimer.Elapsed += StatsTimer_Elapsed;
+            _statsTimer.AutoReset = true;
+            _statsTimer.Enabled = false;
 
-            CountdownTimer.Elapsed += CountdownTimer_Elapsed;
-            CountdownTimer.AutoReset = true;
-            CountdownTimer.Enabled = false;
+            _countdownTimer.Elapsed += CountdownTimer_Elapsed;
+            _countdownTimer.AutoReset = true;
+            _countdownTimer.Enabled = false;
         }
 
         public void PopulateGrid(Antminers ants)
@@ -576,16 +611,21 @@ namespace AntViewer
 
         #region Menu Events
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        private void emailSettingsToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            new EmailSettings().ShowDialog();
         }
-        
+
         private void emailSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new ManageAlerts().ShowDialog();
         }
 
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+        
         private void setupToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new MobileMiner().ShowDialog();
@@ -627,6 +667,36 @@ namespace AntViewer
             Show();
             _notifyIcon.Visible = false;
             WindowState = FormWindowState.Maximized;
+        }
+
+        #endregion
+
+        #region Alerts
+
+        private void RunAlerts(Settings settings)
+        {
+            var errors = new List<string>();
+            foreach (var a in settings.Alerts.Where(a => a.Enabled))
+            {
+                try
+                {
+                    a.Run(_antminerStatuses);
+                }
+                catch (Exception ex)
+                {
+                    errors.Add(ex.Message);
+                }
+            }
+
+            if (errors.Count > 0)
+                new ErrorDialog
+                {
+                    ErrorSubject = "Error running alerts",
+                    ErrorMessage = "Error running alerts, hover to see all errors.",
+                    LongErrorMessage = errors.Aggregate((w, j) => string.Format("{0}\r\n{1}", w, j))
+                }.ShowDialog();
+
+            SettingsService.SaveSettings(settings);
         }
 
         #endregion

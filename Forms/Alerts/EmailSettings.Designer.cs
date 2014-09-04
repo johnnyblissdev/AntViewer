@@ -28,8 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EmailSettings));
             this.lblEmailSmtpServer = new Telerik.WinControls.UI.RadLabel();
-            this.txtEmaiLSmtpServer = new Telerik.WinControls.UI.RadTextBox();
+            this.txtEmailSmtpServer = new Telerik.WinControls.UI.RadTextBox();
             this.txtEmailUsername = new Telerik.WinControls.UI.RadTextBox();
             this.lblEmailUsername = new Telerik.WinControls.UI.RadLabel();
             this.lblEmailSmtpServerPort = new Telerik.WinControls.UI.RadLabel();
@@ -39,12 +40,13 @@
             this.lblEmailPassword = new Telerik.WinControls.UI.RadLabel();
             this.txtEmailFromName = new Telerik.WinControls.UI.RadTextBox();
             this.lblEmailFromName = new Telerik.WinControls.UI.RadLabel();
-            this.txtEmailFromAddress = new Telerik.WinControls.UI.RadTextBox();
-            this.lblEmailFromAddress = new Telerik.WinControls.UI.RadLabel();
             this.chkEmailSsl = new Telerik.WinControls.UI.RadCheckBox();
             this.btnSave = new Telerik.WinControls.UI.RadButton();
+            this.btnCancel = new Telerik.WinControls.UI.RadButton();
+            this.txtToAddress = new Telerik.WinControls.UI.RadTextBox();
+            this.lblToAddress = new Telerik.WinControls.UI.RadLabel();
             ((System.ComponentModel.ISupportInitialize)(this.lblEmailSmtpServer)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.txtEmaiLSmtpServer)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtEmailSmtpServer)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtEmailUsername)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.lblEmailUsername)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.lblEmailSmtpServerPort)).BeginInit();
@@ -54,10 +56,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.lblEmailPassword)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtEmailFromName)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.lblEmailFromName)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.txtEmailFromAddress)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lblEmailFromAddress)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkEmailSsl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnSave)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnCancel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtToAddress)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lblToAddress)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             // 
@@ -71,14 +74,14 @@
             this.lblEmailSmtpServer.Text = "Smtp Server:";
             this.lblEmailSmtpServer.ThemeName = "Windows8";
             // 
-            // txtEmaiLSmtpServer
+            // txtEmailSmtpServer
             // 
-            this.txtEmaiLSmtpServer.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtEmaiLSmtpServer.Location = new System.Drawing.Point(135, 12);
-            this.txtEmaiLSmtpServer.Name = "txtEmaiLSmtpServer";
-            this.txtEmaiLSmtpServer.Size = new System.Drawing.Size(271, 27);
-            this.txtEmaiLSmtpServer.TabIndex = 2;
-            this.txtEmaiLSmtpServer.ThemeName = "Windows8";
+            this.txtEmailSmtpServer.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtEmailSmtpServer.Location = new System.Drawing.Point(135, 12);
+            this.txtEmailSmtpServer.Name = "txtEmailSmtpServer";
+            this.txtEmailSmtpServer.Size = new System.Drawing.Size(271, 27);
+            this.txtEmailSmtpServer.TabIndex = 2;
+            this.txtEmailSmtpServer.ThemeName = "Windows8";
             // 
             // txtEmailUsername
             // 
@@ -154,6 +157,7 @@
             this.txtEmailFromName.Name = "txtEmailFromName";
             this.txtEmailFromName.Size = new System.Drawing.Size(271, 27);
             this.txtEmailFromName.TabIndex = 8;
+            this.txtEmailFromName.Text = "SAntViewer Alerts";
             this.txtEmailFromName.ThemeName = "Windows8";
             // 
             // lblEmailFromName
@@ -166,25 +170,6 @@
             this.lblEmailFromName.Text = "From Name:";
             this.lblEmailFromName.ThemeName = "Windows8";
             // 
-            // txtEmailFromAddress
-            // 
-            this.txtEmailFromAddress.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtEmailFromAddress.Location = new System.Drawing.Point(135, 144);
-            this.txtEmailFromAddress.Name = "txtEmailFromAddress";
-            this.txtEmailFromAddress.Size = new System.Drawing.Size(271, 27);
-            this.txtEmailFromAddress.TabIndex = 10;
-            this.txtEmailFromAddress.ThemeName = "Windows8";
-            // 
-            // lblEmailFromAddress
-            // 
-            this.lblEmailFromAddress.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblEmailFromAddress.Location = new System.Drawing.Point(17, 144);
-            this.lblEmailFromAddress.Name = "lblEmailFromAddress";
-            this.lblEmailFromAddress.Size = new System.Drawing.Size(112, 25);
-            this.lblEmailFromAddress.TabIndex = 9;
-            this.lblEmailFromAddress.Text = "From Address:";
-            this.lblEmailFromAddress.ThemeName = "Windows8";
-            // 
             // chkEmailSsl
             // 
             this.chkEmailSsl.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -196,7 +181,7 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(296, 177);
+            this.btnSave.Location = new System.Drawing.Point(180, 177);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(110, 24);
             this.btnSave.TabIndex = 12;
@@ -204,15 +189,45 @@
             this.btnSave.ThemeName = "Windows8";
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(296, 177);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(110, 24);
+            this.btnCancel.TabIndex = 13;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.ThemeName = "Windows8";
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
+            // txtToAddress
+            // 
+            this.txtToAddress.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtToAddress.Location = new System.Drawing.Point(135, 144);
+            this.txtToAddress.Name = "txtToAddress";
+            this.txtToAddress.Size = new System.Drawing.Size(271, 27);
+            this.txtToAddress.TabIndex = 12;
+            this.txtToAddress.ThemeName = "Windows8";
+            // 
+            // lblToAddress
+            // 
+            this.lblToAddress.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblToAddress.Location = new System.Drawing.Point(36, 144);
+            this.lblToAddress.Name = "lblToAddress";
+            this.lblToAddress.Size = new System.Drawing.Size(93, 25);
+            this.lblToAddress.TabIndex = 11;
+            this.lblToAddress.Text = "To Address:";
+            this.lblToAddress.ThemeName = "Windows8";
+            // 
             // EmailSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(585, 217);
+            this.ClientSize = new System.Drawing.Size(585, 218);
+            this.Controls.Add(this.txtToAddress);
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.lblToAddress);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.chkEmailSsl);
-            this.Controls.Add(this.txtEmailFromAddress);
-            this.Controls.Add(this.lblEmailFromAddress);
             this.Controls.Add(this.txtEmailFromName);
             this.Controls.Add(this.lblEmailFromName);
             this.Controls.Add(this.txtEmailPassword);
@@ -222,8 +237,9 @@
             this.Controls.Add(this.lblEmailSmtpServerPort);
             this.Controls.Add(this.txtEmailUsername);
             this.Controls.Add(this.lblEmailUsername);
-            this.Controls.Add(this.txtEmaiLSmtpServer);
+            this.Controls.Add(this.txtEmailSmtpServer);
             this.Controls.Add(this.lblEmailSmtpServer);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "EmailSettings";
             // 
             // 
@@ -234,7 +250,7 @@
             this.ThemeName = "Windows8";
             this.Load += new System.EventHandler(this.EmailSettings_Load);
             ((System.ComponentModel.ISupportInitialize)(this.lblEmailSmtpServer)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.txtEmaiLSmtpServer)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtEmailSmtpServer)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtEmailUsername)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.lblEmailUsername)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.lblEmailSmtpServerPort)).EndInit();
@@ -244,10 +260,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.lblEmailPassword)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtEmailFromName)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.lblEmailFromName)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.txtEmailFromAddress)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lblEmailFromAddress)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkEmailSsl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnSave)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnCancel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtToAddress)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lblToAddress)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -257,7 +274,7 @@
         #endregion
 
         private Telerik.WinControls.UI.RadLabel lblEmailSmtpServer;
-        private Telerik.WinControls.UI.RadTextBox txtEmaiLSmtpServer;
+        private Telerik.WinControls.UI.RadTextBox txtEmailSmtpServer;
         private Telerik.WinControls.UI.RadTextBox txtEmailUsername;
         private Telerik.WinControls.UI.RadLabel lblEmailUsername;
         private Telerik.WinControls.UI.RadLabel lblEmailSmtpServerPort;
@@ -267,9 +284,10 @@
         private Telerik.WinControls.UI.RadLabel lblEmailPassword;
         private Telerik.WinControls.UI.RadTextBox txtEmailFromName;
         private Telerik.WinControls.UI.RadLabel lblEmailFromName;
-        private Telerik.WinControls.UI.RadTextBox txtEmailFromAddress;
-        private Telerik.WinControls.UI.RadLabel lblEmailFromAddress;
         private Telerik.WinControls.UI.RadCheckBox chkEmailSsl;
         private Telerik.WinControls.UI.RadButton btnSave;
+        private Telerik.WinControls.UI.RadButton btnCancel;
+        private Telerik.WinControls.UI.RadTextBox txtToAddress;
+        private Telerik.WinControls.UI.RadLabel lblToAddress;
     }
 }

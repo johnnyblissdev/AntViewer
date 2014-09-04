@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using AntViewer.API.Settings;
 using AntViewer.DataService.Settings;
 using AntViewer.Forms.Common;
@@ -19,30 +20,43 @@ namespace AntViewer.Forms.Alerts
         private void EmailSettings_Load(object sender, EventArgs e)
         {
             ThemeResolutionService.ApplicationThemeName = "Windows8";
+
+            var settings = SettingsService.GetSettings();
+            txtEmailSmtpServer.Text = settings.Email.SmptServer;
+            txtEmailSmtpServerPort.Text = settings.Email.SmptServerPort.ToString();
+            txtEmailUsername.Text = settings.Email.Username;
+            txtEmailPassword.Text = settings.Email.Password;
+            txtEmailFromName.Text = settings.Email.FromName;
+            txtToAddress.Text = settings.Email.ToAddress;
+            chkEmailSsl.IsChecked = settings.Email.UseSsl;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (!ValidateEmailSettings()) return;
 
-            var settings = new Settings
+            var settings = SettingsService.GetSettings();
+
+            settings.Email = new Email
             {
-                SmptServer = txtEmaiLSmtpServer.Text,
-                SmptServerPort = txtEmailSmtpServerPort.Text,
+                SmptServer = txtEmailSmtpServer.Text,
+                SmptServerPort = Convert.ToInt32(txtEmailSmtpServerPort.Text),
                 UseSsl = chkEmailSsl.IsChecked,
                 Username = txtEmailUsername.Text,
                 Password = txtEmailPassword.Text,
-                FromAddress = txtEmailFromAddress.Text,
-                FromName = txtEmailFromName.Text
+                FromName = txtEmailFromName.Text,
+                ToAddress = txtToAddress.Text
             };
 
             SettingsService.SaveSettings(settings);
+
+            Close();
         }
 
         private bool ValidateEmailSettings()
         {
             var errors = new List<string>();
-            if(string.IsNullOrEmpty(txtEmaiLSmtpServer.Text))
+            if(string.IsNullOrEmpty(txtEmailSmtpServer.Text))
                 errors.Add("Please enter a Smtp Server Address.");
             if(string.IsNullOrEmpty(txtEmailSmtpServerPort.Text))
                 errors.Add("Please enter a Smtp Server Port.");
@@ -50,10 +64,13 @@ namespace AntViewer.Forms.Alerts
                 errors.Add("Please enter a Smtp Username.");
             if(string.IsNullOrEmpty(txtEmailPassword.Text))
                 errors.Add("Please enter a Smtp Password.");
-            if(string.IsNullOrEmpty(txtEmailFromAddress.Text))
-                errors.Add("Please enter a From Address.");
             if (string.IsNullOrEmpty(txtEmailFromName.Text))
                 errors.Add("Please enter a From Name.");
+            if(string.IsNullOrEmpty(txtToAddress.Text))
+                errors.Add("Plesae enter a To Address");
+            int port;
+            if(!int.TryParse(txtEmailSmtpServerPort.Text, out port))
+                errors.Add("Please enter a valid port.");
 
             if (errors.Count > 0)
             {
@@ -67,6 +84,11 @@ namespace AntViewer.Forms.Alerts
             }
 
             return true;
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }

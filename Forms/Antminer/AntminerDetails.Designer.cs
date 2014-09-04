@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AntminerDetails));
             this.pnlDetails = new System.Windows.Forms.Panel();
             this.btnClose = new Telerik.WinControls.UI.RadButton();
             ((System.ComponentModel.ISupportInitialize)(this.btnClose)).BeginInit();
@@ -62,6 +63,7 @@
             this.ClientSize = new System.Drawing.Size(1196, 597);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.pnlDetails);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "AntminerDetails";
             // 
             // 

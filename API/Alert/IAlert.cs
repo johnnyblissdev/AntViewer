@@ -1,7 +1,11 @@
-﻿namespace AntViewer.API.Alert
+﻿using System.Collections.Generic;
+using AntViewer.API.Antminer;
+
+namespace AntViewer.API.Alert
 {
     public interface IAlert
     {
-        void Run();
+        bool Enabled { get; set; }
+        void Run(List<AntminerStatus> antminerStatuses);
     }
 }

@@ -45,6 +45,7 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.alertsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.emailSettingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.emailSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.massRebootToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mobileMinerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -219,17 +220,24 @@
             // alertsToolStripMenuItem
             // 
             this.alertsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.emailSettingsToolStripMenuItem1,
             this.emailSettingsToolStripMenuItem});
             this.alertsToolStripMenuItem.Name = "alertsToolStripMenuItem";
             this.alertsToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
             this.alertsToolStripMenuItem.Text = "Alerts";
-            this.alertsToolStripMenuItem.Visible = false;
+            // 
+            // emailSettingsToolStripMenuItem1
+            // 
+            this.emailSettingsToolStripMenuItem1.Name = "emailSettingsToolStripMenuItem1";
+            this.emailSettingsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.emailSettingsToolStripMenuItem1.Text = "Email Settings";
+            this.emailSettingsToolStripMenuItem1.Click += new System.EventHandler(this.emailSettingsToolStripMenuItem1_Click);
             // 
             // emailSettingsToolStripMenuItem
             // 
             this.emailSettingsToolStripMenuItem.Name = "emailSettingsToolStripMenuItem";
-            this.emailSettingsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
-            this.emailSettingsToolStripMenuItem.Text = "Settings";
+            this.emailSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.emailSettingsToolStripMenuItem.Text = "Alert Settings";
             this.emailSettingsToolStripMenuItem.Click += new System.EventHandler(this.emailSettingsToolStripMenuItem_Click);
             // 
             // massRebootToolStripMenuItem
@@ -323,6 +331,7 @@
         private System.Windows.Forms.ToolStripMenuItem mobileMinerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem setupToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem onlineStatsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem emailSettingsToolStripMenuItem1;
 
 
     }

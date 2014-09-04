@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ManageAntminers));
             this.lblName = new Telerik.WinControls.UI.RadLabel();
             this.txtName = new Telerik.WinControls.UI.RadTextBox();
             this.txtIpAddress = new Telerik.WinControls.UI.RadTextBox();
@@ -236,6 +237,7 @@
             this.Controls.Add(this.txtName);
             this.Controls.Add(this.lblIpAddress);
             this.Controls.Add(this.lblName);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ManageAntminers";
             // 
             // 

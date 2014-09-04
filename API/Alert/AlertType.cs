@@ -5,6 +5,8 @@ namespace AntViewer.API.Alert
     public enum AlertType
     {
         [Description("Miner Down")]
-        MinerDown = 0
+        MinerDown = 0,
+        [Description("Miner Over Tempature")]
+        MinerOverTempature = 1
     }
 }

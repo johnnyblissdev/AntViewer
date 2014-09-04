@@ -35,28 +35,43 @@ namespace AntViewer.Forms.Alerts
             grdAlerts.AllowEditRow = false;
             grdAlerts.AllowCellContextMenu = false;
 
-            var settings = SettingsService.GetSettings();
             grdAlerts.Columns.Add("EnabledAlerts", "Enabled Alerts", "EnabledAlerts");
-            foreach (var a in settings.Alerts.Select(x => Utilities.GetEnumDescription(x.Type)))
-            {
-                grdAlerts.Rows.Add(a);
-            }
+
+            PopulateAlertsGrid();
 
             #endregion
         }
-
-        private void btnEmailSettings_Click(object sender, EventArgs e)
-        {
-            new EmailSettings().ShowDialog();
-        }
-
+        
         private void ddlAlertType_SelectedIndexChanged(object sender, Telerik.WinControls.UI.Data.PositionChangedEventArgs e)
         {
             pnlAlertEditor.Controls.Clear();
             if (ddlAlertType.SelectedItem.Text.Equals(Utilities.GetEnumDescription(AlertType.MinerDown)))
-            {   
-                pnlAlertEditor.Controls.Add(new MinerDown());
+            {
+                var ctrl = new MinerDown();
+                ctrl.Finished += ctrl_Finished;
+                pnlAlertEditor.Controls.Add(ctrl);
             }
+            else if (ddlAlertType.SelectedItem.Text.Equals(Utilities.GetEnumDescription(AlertType.MinerOverTempature)))
+            {
+                var ctrl = new MinerOverTempature();
+                ctrl.Finished += ctrl_Finished;
+                pnlAlertEditor.Controls.Add(ctrl);
+            }
+        }
+
+        void ctrl_Finished(object source)
+        {
+            ddlAlertType.SelectedIndex = 0;
+            PopulateAlertsGrid();
+        }
+
+        private void PopulateAlertsGrid()
+        {
+            var settings = SettingsService.GetSettings();
+
+            grdAlerts.Rows.Clear();
+            foreach (var a in settings.Alerts.Where(x => x.Enabled).Select(x => Utilities.GetEnumDescription(x.Type)))
+                grdAlerts.Rows.Add(a);
         }
     }
 }

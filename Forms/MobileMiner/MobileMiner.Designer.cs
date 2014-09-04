@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MobileMiner));
             this.txtApplicationKey = new Telerik.WinControls.UI.RadTextBox();
             this.lblApplicationKey = new Telerik.WinControls.UI.RadLabel();
             this.txtEmailAddress = new Telerik.WinControls.UI.RadTextBox();
@@ -137,6 +138,7 @@
             this.Controls.Add(this.lblApplicationKey);
             this.Controls.Add(this.txtEmailAddress);
             this.Controls.Add(this.lblEmailAddress);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MobileMiner";
             // 
             // 

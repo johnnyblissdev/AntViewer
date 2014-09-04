@@ -124,12 +124,15 @@
     <Compile Include="API\Alert\AlertType.cs" />
     <Compile Include="API\Alert\IAlert.cs" />
     <Compile Include="API\Alert\MinerDownAlert.cs" />
+    <Compile Include="API\Alert\MInerOverTempatureAlert.cs" />
     <Compile Include="API\Antminer\Antminer.cs" />
     <Compile Include="API\Antminer\Antminers.cs" />
     <Compile Include="API\Antminer\AntminerStatus.cs" />
+    <Compile Include="API\Settings\Email.cs" />
     <Compile Include="API\Settings\MobileMiner.cs" />
     <Compile Include="API\Settings\Settings.cs" />
     <Compile Include="Communication\Antminer\AntminerConnector.cs" />
+    <Compile Include="Communication\Email\EmailService.cs" />
     <Compile Include="DataService\Antminer\AntminerService.cs" />
     <Compile Include="DataService\Settings\SettingsService.cs" />
     <Compile Include="Forms\Alerts\EmailSettings.cs">
@@ -182,6 +185,15 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserControls\Alert\MinerOverTempature.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Alert\MinerOverTempature.Designer.cs">
+      <DependentUpon>MinerOverTempature.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\BaseUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserControls\Alert\MinerDown.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -233,6 +245,9 @@
     <EmbeddedResource Include="UserControls\Alert\MinerDown.resx">
       <DependentUpon>MinerDown.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Alert\MinerOverTempature.resx">
+      <DependentUpon>MinerOverTempature.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UserControls\Antminer\AntminerDetails.resx">
       <DependentUpon>AntminerDetails.cs</DependentUpon>
     </EmbeddedResource>
@@ -268,6 +283,8 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Images\Icons\ab4002f597d1133b.ico" />
+    <Content Include="Images\Icons\AntMiner-Logo.png" />
     <Content Include="Images\Icons\errorIcon.png" />
   </ItemGroup>
   <ItemGroup />
