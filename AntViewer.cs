@@ -39,13 +39,14 @@ namespace AntViewer
         private int _rowCount = 1;
         private int _refreshRowCount;
         private int _dataDispatchedCount;
+        private int _inProgressCount;
 
         private Antminers _antminers = new Antminers();
         private List<AntminerStatus> _antminerStatuses = new List<AntminerStatus>(); 
         private List<MiningStatistics> _antMiningStatisticses = new List<MiningStatistics>();
 
         private readonly string _mobileMinerUrl = ConfigurationManager.AppSettings["MobileMiner.Url"] ?? "https://api.mobileminerapp.com";
-        private const string MobileMinerApiKey = "";
+        private const string MobileMinerApiKey = "IsBO6i4upuxp7d";
 
         private readonly NotifyIcon _notifyIcon = new NotifyIcon();
 
@@ -257,9 +258,7 @@ namespace AntViewer
 
         void _dataDispatchTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (!_dataDispatchedCount.Equals(_antminerStatuses.Count)) return;
-
-            foreach (var ant in _antminers.Antminer.Skip(_antminerStatuses.Count).Take(_settings.Performance.RefreshThreadCount))
+            foreach (var ant in _antminers.Antminer.Skip(_dataDispatchedCount).Take(_settings.Performance.RefreshThreadCount - _inProgressCount))
             {
                 _dataDispatchedCount++;
 
@@ -304,6 +303,7 @@ namespace AntViewer
             _countdownTimer.Stop();
             
             _dataDispatchedCount = 0;
+            _inProgressCount = 0;
             _dataDispatchTimer.Start(); 
         }
 
@@ -315,6 +315,8 @@ namespace AntViewer
         {
             var ant = e.Argument as Antminer;
             if (ant == null) return;
+
+            _inProgressCount++;
 
             var status = new AntminerStatus
             {
@@ -472,6 +474,8 @@ namespace AntViewer
                 _antMiningStatisticses.Add(status.MobileMinerMiningStatistics);
             
             _antminerStatuses.Add(status);
+
+            _inProgressCount--;
 
             _refreshRowCount++;
             if (_refreshRowCount == _antminers.Antminer.Count)
