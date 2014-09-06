@@ -46,7 +46,7 @@ namespace AntViewer
         private List<MiningStatistics> _antMiningStatisticses = new List<MiningStatistics>();
 
         private readonly string _mobileMinerUrl = ConfigurationManager.AppSettings["MobileMiner.Url"] ?? "https://api.mobileminerapp.com";
-        private const string MobileMinerApiKey = "IsBO6i4upuxp7d";
+        private const string MobileMinerApiKey = "";
 
         private readonly NotifyIcon _notifyIcon = new NotifyIcon();
 
