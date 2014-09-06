@@ -11,7 +11,8 @@ namespace AntViewer.Communication.Antminer
 {
     public static class AntminerConnector
     {
-        private const int MaxResponseTime = 500;
+        private const int MaxPingResponseTime = 500;
+        private const int MaxSocketResponseTime = 2000;
 
         public static IDictionary<string, object> GetStats(IPAddress ip)
         {
@@ -20,7 +21,7 @@ namespace AntViewer.Communication.Antminer
             {
                 var result = client.BeginConnect(ip, 4028, null, null);
 
-                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, MaxResponseTime)))
+                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, MaxPingResponseTime)))
                     throw new Exception("Can't connect to miner...");
             }
             catch (Exception)
@@ -30,6 +31,8 @@ namespace AntViewer.Communication.Antminer
 
             using (var os = client.GetStream())
             {
+                os.ReadTimeout = MaxSocketResponseTime;
+
                 var data = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(new {command = "stats"}));
                 os.Write(data, 0, data.Length);
                 os.Flush();
@@ -60,7 +63,7 @@ namespace AntViewer.Communication.Antminer
             {
                 var result = client.BeginConnect(ip, 4028, null, null);
 
-                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, MaxResponseTime)))
+                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, MaxPingResponseTime)))
                     throw new Exception("Can't connect to miner...");
             }
             catch (Exception)
@@ -70,6 +73,8 @@ namespace AntViewer.Communication.Antminer
 
             using (var os = client.GetStream())
             {
+                os.ReadTimeout = MaxSocketResponseTime;
+
                 var data = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(new { command = "devs" }));
                 os.Write(data, 0, data.Length);
                 os.Flush();
@@ -100,7 +105,7 @@ namespace AntViewer.Communication.Antminer
             {
                 var result = client.BeginConnect(ip, 4028, null, null);
 
-                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, MaxResponseTime)))
+                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, MaxPingResponseTime)))
                     throw new Exception("Can't connect to miner...");
             }
             catch (Exception)
@@ -110,6 +115,8 @@ namespace AntViewer.Communication.Antminer
 
             using (var os = client.GetStream())
             {
+                os.ReadTimeout = MaxSocketResponseTime;
+
                 var data = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(new { command = "summary" }));
                 os.Write(data, 0, data.Length);
                 os.Flush();
@@ -140,7 +147,7 @@ namespace AntViewer.Communication.Antminer
             {
                 var result = client.BeginConnect(ip, 4028, null, null);
 
-                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, MaxResponseTime)))
+                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, MaxPingResponseTime)))
                     throw new Exception("Can't connect to miner...");
             }
             catch (Exception)
@@ -150,6 +157,8 @@ namespace AntViewer.Communication.Antminer
 
             using (var os = client.GetStream())
             {
+                os.ReadTimeout = MaxSocketResponseTime;
+
                 var data = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(new { command = "pools" }));
                 os.Write(data, 0, data.Length);
                 os.Flush();
@@ -188,7 +197,7 @@ namespace AntViewer.Communication.Antminer
             {
                 var result = client.BeginConnect(ip, 4028, null, null);
 
-                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, MaxResponseTime)))
+                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, MaxPingResponseTime)))
                     return false;
             }
             catch (Exception)
@@ -198,6 +207,8 @@ namespace AntViewer.Communication.Antminer
 
             using (var os = client.GetStream())
             {
+                os.ReadTimeout = MaxSocketResponseTime;
+
                 var data = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(new { command = "version" }));
                 os.Write(data, 0, data.Length);
                 os.Flush();
@@ -227,7 +238,7 @@ namespace AntViewer.Communication.Antminer
             {
                 var result = client.BeginConnect(ip, 4028, null, null);
 
-                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, MaxResponseTime)))
+                if (!result.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, MaxPingResponseTime)))
                     throw new Exception("Can't connect to miner...");
             }
             catch (Exception)
@@ -237,6 +248,8 @@ namespace AntViewer.Communication.Antminer
 
             using (var os = client.GetStream())
             {
+                os.ReadTimeout = MaxSocketResponseTime;
+
                 var data = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(new { command = "restart" }));
                 os.Write(data, 0, data.Length);
                 os.Flush();

@@ -1,4 +1,4 @@
-﻿namespace AntViewer.Forms.Alerts
+﻿namespace AntViewer.Forms.Email
 {
     partial class EmailSettings
     {

@@ -131,16 +131,17 @@
     <Compile Include="API\Antminer\AntminerStatus.cs" />
     <Compile Include="API\Settings\Email.cs" />
     <Compile Include="API\Settings\MobileMiner.cs" />
+    <Compile Include="API\Settings\Performance.cs" />
     <Compile Include="API\Settings\Settings.cs" />
     <Compile Include="Communication\Antminer\AntminerConnector.cs" />
     <Compile Include="Communication\BTC\BtcPriceService.cs" />
     <Compile Include="Communication\Email\EmailService.cs" />
     <Compile Include="DataService\Antminer\AntminerService.cs" />
     <Compile Include="DataService\Settings\SettingsService.cs" />
-    <Compile Include="Forms\Alerts\EmailSettings.cs">
+    <Compile Include="Forms\Email\EmailSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Alerts\EmailSettings.Designer.cs">
+    <Compile Include="Forms\Email\EmailSettings.Designer.cs">
       <DependentUpon>EmailSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Alerts\ManageAlerts.cs">
@@ -185,6 +186,12 @@
     <Compile Include="Forms\MobileMiner\MobileMiner.Designer.cs">
       <DependentUpon>MobileMiner.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Performance\PerformanceSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Performance\PerformanceSettings.Designer.cs">
+      <DependentUpon>PerformanceSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserControls\Alert\MinerAsicStatus.cs">
@@ -217,7 +224,7 @@
     <EmbeddedResource Include="AntViewer.resx">
       <DependentUpon>AntViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Alerts\EmailSettings.resx">
+    <EmbeddedResource Include="Forms\Email\EmailSettings.resx">
       <DependentUpon>EmailSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Alerts\ManageAlerts.resx">
@@ -240,6 +247,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MobileMiner\MobileMiner.resx">
       <DependentUpon>MobileMiner.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Performance\PerformanceSettings.resx">
+      <DependentUpon>PerformanceSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

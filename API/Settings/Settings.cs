@@ -7,6 +7,7 @@ namespace AntViewer.API.Settings
     public class Settings
     {
         public Email Email { get; set; }
+        public Performance Performance { get; set; }
         public MobileMiner MobileMiner { get; set; }
         public List<AbstractAlert> Alerts { get; set; }
 
@@ -31,6 +32,7 @@ namespace AntViewer.API.Settings
             Alerts = new List<AbstractAlert>();
             MobileMiner = new MobileMiner {Enabled = false};
             Email = new Email();
+            Performance = new Performance();
         }
     }
 }

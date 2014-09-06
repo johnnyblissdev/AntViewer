@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
-using AntViewer.API.Settings;
 using AntViewer.DataService.Settings;
 using AntViewer.Forms.Common;
 using Telerik.WinControls;
 using Telerik.WinControls.UI;
 
-namespace AntViewer.Forms.Alerts
+namespace AntViewer.Forms.Email
 {
     public partial class EmailSettings : RadForm
     {
@@ -37,7 +35,7 @@ namespace AntViewer.Forms.Alerts
 
             var settings = SettingsService.GetSettings();
 
-            settings.Email = new Email
+            settings.Email = new API.Settings.Email
             {
                 SmptServer = txtEmailSmtpServer.Text,
                 SmptServerPort = Convert.ToInt32(txtEmailSmtpServerPort.Text),

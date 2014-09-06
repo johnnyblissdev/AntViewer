@@ -44,6 +44,8 @@
             this.mnuMain = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.performanceSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.alertsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.emailSettingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.emailSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,6 +54,7 @@
             this.setupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.onlineStatsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btcToolTipMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.emailToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grdAntminers)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.grdAntminers.MasterTemplate)).BeginInit();
@@ -193,6 +196,7 @@
             // 
             this.mnuMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.settingsToolStripMenuItem,
             this.alertsToolStripMenuItem,
             this.massRebootToolStripMenuItem,
             this.mobileMinerToolStripMenuItem,
@@ -219,6 +223,22 @@
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.performanceSettingsToolStripMenuItem,
+            this.emailToolStripMenuItem});
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.settingsToolStripMenuItem.Text = "Settings";
+            // 
+            // performanceSettingsToolStripMenuItem
+            // 
+            this.performanceSettingsToolStripMenuItem.Name = "performanceSettingsToolStripMenuItem";
+            this.performanceSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.performanceSettingsToolStripMenuItem.Text = "Performance";
+            this.performanceSettingsToolStripMenuItem.Click += new System.EventHandler(this.performanceSettingsToolStripMenuItem_Click);
+            // 
             // alertsToolStripMenuItem
             // 
             this.alertsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -233,7 +253,6 @@
             this.emailSettingsToolStripMenuItem1.Name = "emailSettingsToolStripMenuItem1";
             this.emailSettingsToolStripMenuItem1.Size = new System.Drawing.Size(148, 22);
             this.emailSettingsToolStripMenuItem1.Text = "Email Settings";
-            this.emailSettingsToolStripMenuItem1.Click += new System.EventHandler(this.emailSettingsToolStripMenuItem1_Click);
             // 
             // emailSettingsToolStripMenuItem
             // 
@@ -277,6 +296,13 @@
             this.btcToolTipMenu.Name = "btcToolTipMenu";
             this.btcToolTipMenu.Size = new System.Drawing.Size(62, 20);
             this.btcToolTipMenu.Text = "BTC: ---";
+            // 
+            // emailToolStripMenuItem
+            // 
+            this.emailToolStripMenuItem.Name = "emailToolStripMenuItem";
+            this.emailToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.emailToolStripMenuItem.Text = "Email";
+            this.emailToolStripMenuItem.Click += new System.EventHandler(this.emailToolStripMenuItem_Click);
             // 
             // AntViewer
             // 
@@ -341,6 +367,9 @@
         private System.Windows.Forms.ToolStripMenuItem onlineStatsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem emailSettingsToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem btcToolTipMenu;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem performanceSettingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem emailToolStripMenuItem;
 
 
     }

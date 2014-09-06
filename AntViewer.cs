@@ -16,6 +16,8 @@ using AntViewer.DataService.Settings;
 using AntViewer.Forms.Alerts;
 using AntViewer.Forms.Antminer;
 using AntViewer.Forms.Common;
+using AntViewer.Forms.Email;
+using AntViewer.Forms.Performance;
 using MultiMiner.MobileMiner;
 using MultiMiner.MobileMiner.Data;
 using Telerik.WinControls;
@@ -30,12 +32,13 @@ namespace AntViewer
         private readonly Timer _refreshTimer = new Timer(1000);
         private readonly Timer _statsTimer = new Timer(2000);
         private readonly Timer _countdownTimer = new Timer(1000);
-        private readonly Timer _stuckTimer = new Timer(60000);
         private readonly Timer _btcTimer = new Timer(1000);
+        private readonly Timer _dataDispatchTimer = new Timer(100);
         
         private DateTime _lastRefreshed;
         private int _rowCount = 1;
-        private int _refreshRowCount = 0;
+        private int _refreshRowCount;
+        private int _dataDispatchedCount;
 
         private Antminers _antminers = new Antminers();
         private List<AntminerStatus> _antminerStatuses = new List<AntminerStatus>(); 
@@ -45,6 +48,8 @@ namespace AntViewer
         private const string MobileMinerApiKey = "";
 
         private readonly NotifyIcon _notifyIcon = new NotifyIcon();
+
+        private Settings _settings;
 
         public AntViewer()
         {
@@ -59,6 +64,16 @@ namespace AntViewer
 
             WindowState = FormWindowState.Maximized;
 
+            _settings = SettingsService.GetSettings();
+
+            #region Data Dispatch Timer
+
+            _dataDispatchTimer.Enabled = false;
+            _dataDispatchTimer.AutoReset = true;
+            _dataDispatchTimer.Elapsed += _dataDispatchTimer_Elapsed;
+
+            #endregion
+
             #region BTC Timer
 
             _btcTimer.Enabled = true;
@@ -67,16 +82,7 @@ namespace AntViewer
             _btcTimer.Start();
 
             #endregion
-
-            #region Stuck Timer
-
-            _stuckTimer.Enabled = true;
-            _stuckTimer.AutoReset = true;
-            _stuckTimer.Elapsed += _stuckTimer_Elapsed;
-            _stuckTimer.Start();
-
-            #endregion
-
+            
             #region Notify Icon
 
             _notifyIcon.Icon = Icon;
@@ -100,6 +106,10 @@ namespace AntViewer
             var restart = new MenuItem("Restart");
             restart.Click += restart_Click;
             contextMenu.MenuItems.Add(restart);
+
+            var openInBrowser = new MenuItem("Open in browser");
+            openInBrowser.Click += openInBrowser_Click;
+            contextMenu.MenuItems.Add(openInBrowser);
 
             #endregion
 
@@ -162,6 +172,31 @@ namespace AntViewer
 
         #region Context Menu Events
 
+        void openInBrowser_Click(object sender, EventArgs e)
+        {
+            var id = (Guid)grdAntminers.CurrentRow.Tag;
+            var antminer = _antminers.Antminer.SingleOrDefault(x => x.Id.Equals(id));
+            if (antminer == null) return;
+
+            try
+            {
+                var url = antminer.IpAddress;
+                if (!url.Contains("http://"))
+                    url = string.Format("http://{0}", url);
+
+                var pInfo = new ProcessStartInfo(url);
+                Process.Start(pInfo);
+            }
+            catch (Exception ex)
+            {
+                new ErrorDialog
+                {
+                    ErrorSubject = "Unable to open browser",
+                    ErrorMessage = "Unable to open browser to Antminer."
+                }.ShowDialog();
+            }
+        }
+
         void massRebootToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var result = new ConfirmDialog { ConfirmSubject = "Mass Restart", ConfirmMessage = "Are you sure you want to restart all miners?" }.ShowDialog();
@@ -194,8 +229,8 @@ namespace AntViewer
 
         void restart_Click(object sender, EventArgs e)
         {
-            var id = Guid.Parse(grdAntminers.CurrentRow.Cells[0].Value.ToString());
-            var antminer = AntminerService.GetAntminerById(id);
+            var id = (Guid)grdAntminers.CurrentRow.Tag;
+            var antminer = _antminers.Antminer.SingleOrDefault(x => x.Id.Equals(id));
             if (antminer == null) return;
 
             try
@@ -220,26 +255,28 @@ namespace AntViewer
 
         #region Timer Events
 
-        void _stuckTimer_Elapsed(object sender, ElapsedEventArgs e)
+        void _dataDispatchTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (DateTime.Now.Subtract(_lastRefreshed).Seconds <= 120) return;
+            if (!_dataDispatchedCount.Equals(_antminerStatuses.Count)) return;
 
-            _refreshTimer.Interval = 100;
-            _refreshTimer.Start();
+            foreach (var ant in _antminers.Antminer.Skip(_antminerStatuses.Count).Take(_settings.Performance.RefreshThreadCount))
+            {
+                _dataDispatchedCount++;
 
-            _statsTimer.Enabled = true;
-            _statsTimer.Start();
+                var antminerStatusBackgroundWorker = new BackgroundWorker();
+                antminerStatusBackgroundWorker.DoWork += antminerStatusBackgroundWorker_DoWork;
+                antminerStatusBackgroundWorker.RunWorkerCompleted += antminerStatusBackgroundWorker_RunWorkerCompleted;
+                antminerStatusBackgroundWorker.RunWorkerAsync(ant);
+            }
 
-            _lastRefreshed = DateTime.Now;
-
-            _countdownTimer.Enabled = true;
-            _countdownTimer.Start();
+            if (_dataDispatchedCount.Equals(_antminerStatuses.Count))
+                _dataDispatchTimer.Stop();
         }
 
         void CountdownTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             var timeLeft = DateTime.Now.Subtract(_lastRefreshed).Seconds;
-            btnRefresh.Invoke(new MethodInvoker(() => btnRefresh.Text = string.Format("Refresh ({0})", 60 - timeLeft)));
+            btnRefresh.Invoke(new MethodInvoker(() => btnRefresh.Text = string.Format("Refresh ({0})", (_settings.Performance.RefreshInterval/1000) - timeLeft)));
         }
 
         void StatsTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -265,14 +302,9 @@ namespace AntViewer
 
             _countdownTimer.Enabled = false;
             _countdownTimer.Stop();
-
-            foreach (var ant in _antminers.Antminer)
-            {
-                var antminerStatusBackgroundWorker = new BackgroundWorker();
-                antminerStatusBackgroundWorker.DoWork += antminerStatusBackgroundWorker_DoWork;
-                antminerStatusBackgroundWorker.RunWorkerCompleted += antminerStatusBackgroundWorker_RunWorkerCompleted;
-                antminerStatusBackgroundWorker.RunWorkerAsync(ant);
-            }   
+            
+            _dataDispatchedCount = 0;
+            _dataDispatchTimer.Start(); 
         }
 
         #endregion
@@ -444,7 +476,7 @@ namespace AntViewer
             _refreshRowCount++;
             if (_refreshRowCount == _antminers.Antminer.Count)
             {
-                _refreshTimer.Interval = 60000;
+                _refreshTimer.Interval = _settings.Performance.RefreshInterval;
                 _refreshTimer.Start();
 
                 _statsTimer.Enabled = true;
@@ -646,7 +678,18 @@ namespace AntViewer
 
         #region Menu Events
 
-        private void emailSettingsToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void performanceSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new PerformanceSettings().ShowDialog();
+
+            btnRefresh.Text = "Refresh";
+            _settings = SettingsService.GetSettings();
+            _rowCount = 1;
+            grdAntminers.Rows.Clear();
+            _refreshTimer.Interval = 1000;
+        }
+
+        private void emailToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new EmailSettings().ShowDialog();
         }
@@ -670,7 +713,7 @@ namespace AntViewer
         {
             try
             {
-                var url = ConfigurationManager.AppSettings["MobileMiner.DashboardUrl"] ?? "http://web.mobileminerapp.com/machines";
+                var url = ConfigurationManager.AppSettings["MobileMiner.DashboardUrl"] ?? "http://web.mobileminerapp.com/";
                 var pInfo = new ProcessStartInfo(url);
                 Process.Start(pInfo);
             }
