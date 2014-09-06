@@ -681,11 +681,10 @@ namespace AntViewer
         private void performanceSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new PerformanceSettings().ShowDialog();
-
-            btnRefresh.Text = "Refresh";
             _settings = SettingsService.GetSettings();
             _rowCount = 1;
             grdAntminers.Rows.Clear();
+            _countdownTimer.Stop();
             _refreshTimer.Interval = 1000;
         }
 

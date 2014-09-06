@@ -88,6 +88,7 @@
             // 
             // txtRefreshInterval
             // 
+            this.txtRefreshInterval.Enabled = false;
             this.txtRefreshInterval.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtRefreshInterval.Location = new System.Drawing.Point(208, 12);
             this.txtRefreshInterval.Name = "txtRefreshInterval";
@@ -97,6 +98,7 @@
             // 
             // txtRefreshThreadCount
             // 
+            this.txtRefreshThreadCount.Enabled = false;
             this.txtRefreshThreadCount.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtRefreshThreadCount.Location = new System.Drawing.Point(208, 79);
             this.txtRefreshThreadCount.Name = "txtRefreshThreadCount";

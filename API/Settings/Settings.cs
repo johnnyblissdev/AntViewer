@@ -32,7 +32,7 @@ namespace AntViewer.API.Settings
             Alerts = new List<AbstractAlert>();
             MobileMiner = new MobileMiner {Enabled = false};
             Email = new Email();
-            Performance = new Performance();
+            Performance = new Performance {RefreshInterval = 60000, RefreshThreadCount = 10};
         }
     }
 }
