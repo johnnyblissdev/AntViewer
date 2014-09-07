@@ -183,9 +183,15 @@ namespace AntViewer.Forms.Antminer
 
         private void PopulateAntminers()
         {
-            grdAntminers.DataSource = null;
-            grdAntminers.DataSource = Antminers.Antminer;
-            grdAntminers.Columns[0].IsVisible = false;
+            try
+            {
+                grdAntminers.DataSource = null;
+                grdAntminers.DataSource = Antminers.Antminer;
+            }
+            catch (Exception)
+            {
+                
+            }
         }
 
         #region Context Menu Events
@@ -220,6 +226,11 @@ namespace AntViewer.Forms.Antminer
         {
             SaveAntminers();
             Close();
+        }
+
+        private void grdAntminers_DataBindingComplete(object sender, GridViewBindingCompleteEventArgs e)
+        {
+            grdAntminers.Columns[0].IsVisible = false;
         }
     }
 }

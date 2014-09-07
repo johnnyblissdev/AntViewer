@@ -46,6 +46,7 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.performanceSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.emailToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.alertsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.emailSettingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.emailSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,7 +55,7 @@
             this.setupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.onlineStatsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btcToolTipMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.emailToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.refreshTimeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grdAntminers)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.grdAntminers.MasterTemplate)).BeginInit();
@@ -200,7 +201,8 @@
             this.alertsToolStripMenuItem,
             this.massRebootToolStripMenuItem,
             this.mobileMinerToolStripMenuItem,
-            this.btcToolTipMenu});
+            this.btcToolTipMenu,
+            this.refreshTimeToolStripMenuItem});
             this.mnuMain.Location = new System.Drawing.Point(0, 0);
             this.mnuMain.Name = "mnuMain";
             this.mnuMain.Size = new System.Drawing.Size(1302, 24);
@@ -235,9 +237,16 @@
             // performanceSettingsToolStripMenuItem
             // 
             this.performanceSettingsToolStripMenuItem.Name = "performanceSettingsToolStripMenuItem";
-            this.performanceSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.performanceSettingsToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.performanceSettingsToolStripMenuItem.Text = "Performance";
             this.performanceSettingsToolStripMenuItem.Click += new System.EventHandler(this.performanceSettingsToolStripMenuItem_Click);
+            // 
+            // emailToolStripMenuItem
+            // 
+            this.emailToolStripMenuItem.Name = "emailToolStripMenuItem";
+            this.emailToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.emailToolStripMenuItem.Text = "Email";
+            this.emailToolStripMenuItem.Click += new System.EventHandler(this.emailToolStripMenuItem_Click);
             // 
             // alertsToolStripMenuItem
             // 
@@ -297,12 +306,11 @@
             this.btcToolTipMenu.Size = new System.Drawing.Size(62, 20);
             this.btcToolTipMenu.Text = "BTC: ---";
             // 
-            // emailToolStripMenuItem
+            // refreshTimeToolStripMenuItem
             // 
-            this.emailToolStripMenuItem.Name = "emailToolStripMenuItem";
-            this.emailToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.emailToolStripMenuItem.Text = "Email";
-            this.emailToolStripMenuItem.Click += new System.EventHandler(this.emailToolStripMenuItem_Click);
+            this.refreshTimeToolStripMenuItem.Name = "refreshTimeToolStripMenuItem";
+            this.refreshTimeToolStripMenuItem.Size = new System.Drawing.Size(91, 20);
+            this.refreshTimeToolStripMenuItem.Text = "Refresh Time:";
             // 
             // AntViewer
             // 
@@ -370,6 +378,7 @@
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem performanceSettingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem emailToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem refreshTimeToolStripMenuItem;
 
 
     }

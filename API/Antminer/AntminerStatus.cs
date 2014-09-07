@@ -18,6 +18,8 @@ namespace AntViewer.API.Antminer
         public double BestShare { get; set; }
         public string Fans { get; set; }
         public string Temps { get; set; }
+        public int FanSpeed { get; set; }
+        public double WorkUtility { get; set; }
 
         public int HighestTemp
         {

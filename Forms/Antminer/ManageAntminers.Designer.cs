@@ -156,6 +156,7 @@
             this.grdAntminers.Size = new System.Drawing.Size(829, 427);
             this.grdAntminers.TabIndex = 9;
             this.grdAntminers.Text = "radGridView1";
+            this.grdAntminers.DataBindingComplete += new Telerik.WinControls.UI.GridViewBindingCompleteEventHandler(this.grdAntminers_DataBindingComplete);
             // 
             // btnScan
             // 

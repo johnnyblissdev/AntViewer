@@ -12,7 +12,7 @@ namespace AntViewer.Communication.Antminer
     public static class AntminerConnector
     {
         private const int MaxPingResponseTime = 500;
-        private const int MaxSocketResponseTime = 2000;
+        private const int MaxSocketResponseTime = 4000;
 
         public static IDictionary<string, object> GetStats(IPAddress ip)
         {

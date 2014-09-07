@@ -37,13 +37,11 @@ namespace AntViewer
         
         private DateTime _lastRefreshed;
         private int _rowCount = 1;
-        private int _refreshRowCount;
         private int _dataDispatchedCount;
         private int _inProgressCount;
 
         private Antminers _antminers = new Antminers();
-        private List<AntminerStatus> _antminerStatuses = new List<AntminerStatus>(); 
-        private List<MiningStatistics> _antMiningStatisticses = new List<MiningStatistics>();
+        private List<AntminerStatus> _antminerStatuses = new List<AntminerStatus>();
 
         private readonly string _mobileMinerUrl = ConfigurationManager.AppSettings["MobileMiner.Url"] ?? "https://api.mobileminerapp.com";
         private const string MobileMinerApiKey = "";
@@ -51,6 +49,8 @@ namespace AntViewer
         private readonly NotifyIcon _notifyIcon = new NotifyIcon();
 
         private Settings _settings;
+
+        private DateTime _startRefreshtTime;
 
         public AntViewer()
         {
@@ -268,8 +268,32 @@ namespace AntViewer
                 antminerStatusBackgroundWorker.RunWorkerAsync(ant);
             }
 
-            if (_dataDispatchedCount.Equals(_antminerStatuses.Count))
-                _dataDispatchTimer.Stop();
+            if (!_dataDispatchedCount.Equals(_antminerStatuses.Count)) return;
+
+            var refreshTime = DateTime.Now.Subtract(_startRefreshtTime);
+            refreshTimeToolStripMenuItem.Text = string.Format("Refresh Time: {0}.{1} seconds", refreshTime.Seconds, refreshTime.Milliseconds);
+            _dataDispatchTimer.Stop();
+
+            _refreshTimer.Interval = _settings.Performance.RefreshInterval;
+            _refreshTimer.Start();
+
+            _statsTimer.Enabled = true;
+            _statsTimer.Start();
+
+            _lastRefreshed = DateTime.Now;
+
+            _countdownTimer.Enabled = true;
+            _countdownTimer.Start();
+
+            RunAlerts(_settings);
+
+            if (_settings.MobileMiner.Enabled)
+            {
+                var mobileMinerBackgroundWorker = new BackgroundWorker();
+                mobileMinerBackgroundWorker.DoWork += mobileMinerBackgroundWorker_DoWork;
+                mobileMinerBackgroundWorker.RunWorkerCompleted += mobileMinerBackgroundWorker_RunWorkerCompleted;
+                mobileMinerBackgroundWorker.RunWorkerAsync();
+            }
         }
 
         void CountdownTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -289,8 +313,6 @@ namespace AntViewer
         {
             _antminers = AntminerService.GetAntminers();
 
-            _refreshRowCount = 0;
-            _antMiningStatisticses = new List<MiningStatistics>();
             _antminerStatuses = new List<AntminerStatus>();
 
             if (grdAntminers.Rows.Count == 0)
@@ -304,6 +326,7 @@ namespace AntViewer
             
             _dataDispatchedCount = 0;
             _inProgressCount = 0;
+            _startRefreshtTime = DateTime.Now;
             _dataDispatchTimer.Start(); 
         }
 
@@ -338,8 +361,6 @@ namespace AntViewer
             {
                 var summary = AntminerConnector.GetSummary(IPAddress.Parse(ant.IpAddress));
                 var stats = AntminerConnector.GetStats(IPAddress.Parse(ant.IpAddress));
-                var pools = AntminerConnector.GetPools(IPAddress.Parse(ant.IpAddress));
-                var devs = AntminerConnector.GetDev(IPAddress.Parse(ant.IpAddress));
 
                 var hwError = Convert.ToInt32(summary["Hardware Errors"].ToString());
                 var diffA = Convert.ToDouble(summary["Difficulty Accepted"].ToString());
@@ -358,43 +379,11 @@ namespace AntViewer
                 status.StalePercentage = (Math.Round(stale / accepted) * 100);
                 status.BestShare = Convert.ToDouble(summary["Best Share"].ToString());
                 status.Fans = string.Format("{0}, {1}", stats["fan1"], stats["fan2"]);
+                status.FanSpeed = Convert.ToInt32(stats["fan1"]);
                 status.Temps = string.Format("{0}, {1}", stats["temp1"], stats["temp2"]);
                 status.Freq = stats["frequency"].ToString();
                 status.AsicStatus = string.Format("{0} - {1}", stats["chain_acs1"], stats["chain_acs2"]);
-
-                status.MobileMinerMiningStatistics = new MiningStatistics
-                {
-                    Index = 0,
-                    DeviceID = Convert.ToInt32(devs["ID"]),
-                    AcceptedShares = (int)accepted,
-                    Algorithm = "SHA-256",
-                    Kind = "ASC",
-                    Appliance = false,
-                    AverageHashrate = status.GhsAv*1000000,
-                    CurrentHashrate = status.Ghs5S*1000000,
-                    Enabled = true,
-                    FanSpeed = Convert.ToInt32(stats["fan1"]),
-                    FullName = status.Name,
-                    HardwareErrors = hwError,
-                    HardwareErrorsPercent = status.HardwareErrorPercentage,
-                    MachineName = status.Name,
-                    MinerName = "Spiceminer's Ant Viewer",
-                    Name = status.Name,
-                    RejectedShares = (int)rejects,
-                    RejectedSharesPercent = status.RejectPercentage,
-                    Status = status.Status,
-                    Temperature = GetHighestTemp(status.Temps),
-                    Utility = Convert.ToDouble(summary["Work Utility"]),
-                    FanPercent = 0,
-                    GpuActivity = 0,
-                    GpuClock = 0,
-                    GpuVoltage = 0,
-                    Intensity = "0",
-                    MemoryClock = 0,
-                    PoolIndex = 0,
-                    PoolName = pools[0]["URL"].ToString(),
-                    PowerTune = 0,
-                };
+                status.WorkUtility = Convert.ToDouble(summary["Work Utility"]);
             }
             catch (Exception)
             {
@@ -469,47 +458,74 @@ namespace AntViewer
                     row.Cells[16].Value = status.AsicStatus;
                 }));
             }
-
-            if(status.MobileMinerMiningStatistics != null)
-                _antMiningStatisticses.Add(status.MobileMinerMiningStatistics);
             
             _antminerStatuses.Add(status);
 
             _inProgressCount--;
+        }
 
-            _refreshRowCount++;
-            if (_refreshRowCount == _antminers.Antminer.Count)
+        #endregion
+
+        #region Mobileminer Background Worker
+
+        void mobileMinerBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            var mobileMinerStatus = e.Result as List<MiningStatistics>;
+            if (mobileMinerStatus == null || mobileMinerStatus.Count == 0) return;
+
+            try
             {
-                _refreshTimer.Interval = _settings.Performance.RefreshInterval;
-                _refreshTimer.Start();
-
-                _statsTimer.Enabled = true;
-                _statsTimer.Start();
-
-                _lastRefreshed = DateTime.Now;
-
-                _countdownTimer.Enabled = true;
-                _countdownTimer.Start();
-
-                var settings = SettingsService.GetSettings();
-                RunAlerts(settings);
-
-                if (settings.MobileMiner.Enabled)
-                {
-                    try
-                    {
-                        ApiContext.SubmitMiningStatistics(_mobileMinerUrl,
-                            MobileMinerApiKey,
-                            settings.MobileMiner.EmailAddress,
-                            settings.MobileMiner.ApplicationKey,
-                            _antMiningStatisticses);
-                    }
-                    catch (Exception)
-                    {
-                        
-                    }
-                }
+                ApiContext.SubmitMiningStatistics(_mobileMinerUrl,
+                    MobileMinerApiKey,
+                    _settings.MobileMiner.EmailAddress,
+                    _settings.MobileMiner.ApplicationKey,
+                    mobileMinerStatus);
             }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        void mobileMinerBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var mobileMinerStatus = (from status in _antminerStatuses
+                let pools = AntminerConnector.GetPools(IPAddress.Parse(status.IpAddress))
+                let devs = AntminerConnector.GetDev(IPAddress.Parse(status.IpAddress))
+                select new MiningStatistics
+                {
+                    Index = 0, 
+                    DeviceID = Convert.ToInt32(devs["ID"]), 
+                    AcceptedShares = Convert.ToInt32(devs["Accepted"]),
+                    Algorithm = "SHA-256", Kind = "ASC", 
+                    Appliance = false,
+                    AverageHashrate = Convert.ToDouble(devs["MHS av"]), 
+                    CurrentHashrate = Convert.ToDouble(devs["MHS 5s"]), 
+                    Enabled = true, 
+                    FanSpeed = status.FanSpeed,
+                    FullName = status.Name,
+                    HardwareErrors = Convert.ToInt32(devs["Hardware Errors"]), 
+                    HardwareErrorsPercent = status.HardwareErrorPercentage,
+                    MachineName = status.Name, 
+                    MinerName = "Spiceminer's Ant Viewer", 
+                    Name = status.Name,
+                    RejectedShares = Convert.ToInt32(devs["Rejected"]), 
+                    RejectedSharesPercent = status.RejectPercentage, 
+                    Status = status.Status,
+                    Temperature = GetHighestTemp(status.Temps),
+                    Utility = status.WorkUtility, 
+                    FanPercent = 0, 
+                    GpuActivity = 0, 
+                    GpuClock = 0, 
+                    GpuVoltage = 0,
+                    Intensity = "0", 
+                    MemoryClock = 0, 
+                    PoolIndex = 0, 
+                    PoolName = pools[0]["URL"].ToString(), 
+                    PowerTune = 0,
+                }).ToList();
+
+            e.Result = mobileMinerStatus;
         }
 
         #endregion
@@ -695,11 +711,13 @@ namespace AntViewer
         private void emailToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new EmailSettings().ShowDialog();
+            _settings = SettingsService.GetSettings();
         }
 
         private void emailSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new ManageAlerts().ShowDialog();
+            _settings = SettingsService.GetSettings();
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -710,6 +728,7 @@ namespace AntViewer
         private void setupToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new MobileMiner().ShowDialog();
+            _settings = SettingsService.GetSettings();
         }
 
         private void onlineStatsToolStripMenuItem_Click(object sender, EventArgs e)
